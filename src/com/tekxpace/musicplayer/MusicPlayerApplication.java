@@ -4,12 +4,16 @@ import android.app.Application;
 
 import com.parse.Parse;
 import com.parse.ParseACL;
+import com.parse.ParseObject;
+import com.tekxpace.musicplayer.parse.Device;
 
-public class AudioApplication extends Application {
+public class MusicPlayerApplication extends Application {
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
+
+		ParseObject.registerSubclass(Device.class);
 
 		/*
 		 * Fill in this section with your Parse credentials
