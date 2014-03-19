@@ -23,6 +23,7 @@ import com.parse.ParseQuery;
 import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.tekxpace.musicplayer.parse.Device;
+import com.tekxpace.musicplayer.parse.Group;
 import com.tekxpace.musicplayer.utility.Utility;
 
 public class HomeActivity extends Activity {
@@ -31,7 +32,7 @@ public class HomeActivity extends Activity {
 	private MediaPlayer mediaPlayer = null;
 	private Device device = null;
 
-	private void registerDevice() {
+	private void registerDevice(final String deviceName) {
 		final String deviceId = Utility.getUniqueDeviceId(this);
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Device");
 		query.whereEqualTo("deviceId", deviceId);
@@ -46,7 +47,7 @@ public class HomeActivity extends Activity {
 					} else {
 						// register user
 						Device user = new Device();
-						user.setDeviceName("A");
+						user.setDeviceName(deviceName);
 						user.setDeviceId(deviceId);
 						user.saveInBackground(new SaveCallback() {
 							@Override
@@ -66,14 +67,7 @@ public class HomeActivity extends Activity {
 		});
 	}
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_home);
-		ParseAnalytics.trackAppOpened(getIntent());
-
-		registerDevice();
-
+	private void receiveMediaFromServer() {
 		// request to receive file from server
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Media");
 		query.whereEqualTo("username", "Sheikh Muneeb");
@@ -98,6 +92,51 @@ public class HomeActivity extends Activity {
 				}
 			}
 		});
+	}
+
+	private void joinGroup(String deviceName) {
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Device");
+		query.whereEqualTo("deviceName", deviceName);
+		query.findInBackground(new FindCallback<ParseObject>() {
+			public void done(List<ParseObject> devices, ParseException e) {
+				if (e == null) {
+					Log.d(LOG_TAG, "Retrieved " + devices.size() + " devices");
+					Device masterDevice = (Device) devices.get(0);
+
+					Group group = new Group();
+					group.setMasterDevice(masterDevice);
+					group.setSlaveDevice(device);
+					group.saveInBackground(new SaveCallback() {
+						@Override
+						public void done(ParseException e) {
+							if (e == null)
+								Log.i(LOG_TAG, "group joined");
+							else
+								e.printStackTrace();
+						}
+					});
+
+				} else {
+					Log.d(LOG_TAG, "Error: " + e.getMessage());
+				}
+			}
+		});
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_home);
+		ParseAnalytics.trackAppOpened(getIntent());
+
+		// Master Device
+		// registerDevice("Device A");
+		// receiveMediaFromServer();
+
+		// Slave Device
+		registerDevice("Device B");
+		joinGroup("Device A");
+
 	}
 
 	private MediaPlayer prepareMediaPlayer(byte[] mp3SoundByteArray) {
@@ -129,22 +168,22 @@ public class HomeActivity extends Activity {
 		} finally {
 			if (tempMp3 != null) {
 				tempMp3.delete();
-				Log.d(LOG_TAG, "file deleted");
+				Log.d(LOG_TAG, "File deleted");
 			}
 
 			if (fis != null) {
 				try {
 					fis.close();
+					Log.d(LOG_TAG, "InputStream closed");
 				} catch (IOException e) {
 					e.printStackTrace();
-					Log.d(LOG_TAG, "file input stream closed");
 				}
 			}
 		}
 	}
 
 	private void playMedia(MediaPlayer mediaPlayer) {
-		Log.d(LOG_TAG, "Playing mp3");
+		Log.d(LOG_TAG, "Playing media");
 		if (mediaPlayer != null)
 			mediaPlayer.start();
 	}
