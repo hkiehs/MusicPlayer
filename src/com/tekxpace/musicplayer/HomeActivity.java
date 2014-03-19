@@ -2,7 +2,6 @@ package com.tekxpace.musicplayer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,9 +28,8 @@ import com.tekxpace.musicplayer.utility.Utility;
 public class HomeActivity extends Activity {
 	private static final String LOG_TAG = "HomeActivity";
 
-	private FileDescriptor fileDescriptor = null;
 	private MediaPlayer mediaPlayer = null;
-	private static Device device = null;
+	private Device device = null;
 
 	private void registerDevice() {
 		final String deviceId = Utility.getUniqueDeviceId(this);
@@ -44,7 +42,7 @@ public class HomeActivity extends Activity {
 					if (devices.size() > 0) {
 						// device exists
 						device = (Device) devices.get(0);
-						Log.d(LOG_TAG, device.getDeviceId());
+						Log.d(LOG_TAG, "DeviceId[" + device.getDeviceId() + "]");
 					} else {
 						// register user
 						Device user = new Device();
@@ -87,9 +85,9 @@ public class HomeActivity extends Activity {
 					mediaFile.getDataInBackground(new GetDataCallback() {
 						public void done(byte[] data, ParseException e) {
 							if (e == null) {
-								Log.d(LOG_TAG, "Data received from server... Playing mp3");
-								prepareMedia(data);
-								playMedia();
+								Log.d(LOG_TAG, "Data received from server");
+								mediaPlayer = prepareMediaPlayer(data);
+								playMedia(mediaPlayer);
 							} else {
 								e.printStackTrace();
 							}
@@ -102,7 +100,7 @@ public class HomeActivity extends Activity {
 		});
 	}
 
-	private void prepareMedia(byte[] mp3SoundByteArray) {
+	private MediaPlayer prepareMediaPlayer(byte[] mp3SoundByteArray) {
 		File tempMp3 = null;
 		FileInputStream fis = null;
 		try {
@@ -115,9 +113,19 @@ public class HomeActivity extends Activity {
 			fos.close();
 
 			fis = new FileInputStream(tempMp3);
-			fileDescriptor = fis.getFD();
+			// Tried reusing instance of media player
+			// but that resulted in system crashes...
+			killMediaPlayer();
+			mediaPlayer = new MediaPlayer();
+			// Tried passing path directly, but kept getting
+			// "Prepare failed.: status=0x1"
+			// so using file descriptor instead
+			mediaPlayer.setDataSource(fis.getFD());
+			mediaPlayer.prepare();
+			return mediaPlayer;
 		} catch (IOException e) {
 			Log.d(LOG_TAG, e.getMessage());
+			return null;
 		} finally {
 			if (tempMp3 != null) {
 				tempMp3.delete();
@@ -135,25 +143,10 @@ public class HomeActivity extends Activity {
 		}
 	}
 
-	private void playMedia() {
-		// Tried reusing instance of media player
-		// but that resulted in system crashes...
-		killMediaPlayer();
-		mediaPlayer = new MediaPlayer();
-		// Tried passing path directly, but kept getting
-		// "Prepare failed.: status=0x1"
-		// so using file descriptor instead
-		try {
-			mediaPlayer.setDataSource(fileDescriptor);
-			mediaPlayer.prepare();
+	private void playMedia(MediaPlayer mediaPlayer) {
+		Log.d(LOG_TAG, "Playing mp3");
+		if (mediaPlayer != null)
 			mediaPlayer.start();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
