@@ -1,4 +1,4 @@
-package com.parse.onetomanytutorial;
+package com.tekxpace.musicplayer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -162,6 +162,7 @@ public class HomeActivity extends Activity {
 		} finally {
 			if (tempMp3 != null) {
 				tempMp3.delete();
+				Log.d(LOG_TAG, "file deleted");
 			}
 
 			if (fis != null) {
@@ -169,6 +170,7 @@ public class HomeActivity extends Activity {
 					fis.close();
 				} catch (IOException e) {
 					e.printStackTrace();
+					Log.d(LOG_TAG, "file input stream closed");
 				}
 			}
 		}

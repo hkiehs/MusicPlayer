@@ -1,4 +1,4 @@
-package com.parse.onetomanytutorial;
+package com.tekxpace.musicplayer;
 
 import android.app.Application;
 
