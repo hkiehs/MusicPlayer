@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
@@ -12,12 +13,16 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.FunctionCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseAnalytics;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ProgressCallback;
@@ -30,30 +35,62 @@ public class HomeActivity extends Activity {
 	private static final String LOG_TAG = "HomeActivity";
 
 	private MediaPlayer mediaPlayer = null;
-	private Device device = null;
+	private Device mDevice = null;
+	
+	private void registerParseInstallation(Device device) {
+		ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+		installation.put("device", device);
+		installation.saveInBackground();
+	}
 
 	private void registerDevice(final String deviceName) {
 		final String deviceId = Utility.getUniqueDeviceId(this);
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Device");
 		query.whereEqualTo("deviceId", deviceId);
+		try {
+			List<ParseObject> devices = query.find();
+			// device available
+			if (devices != null && devices.size() > 0) {
+				// set the class variable
+				mDevice = (Device) devices.get(0);
+				registerParseInstallation(mDevice);
+				
+				// join the master group
+				joinGroup("Device A");
+			} else {
+				// device not registered
+				Device device = new Device();
+				device.setDeviceName(deviceName);
+				device.setDeviceId(deviceId);
+				device.save();
+				registerParseInstallation(device);
+			}
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
+
 		query.findInBackground(new FindCallback<ParseObject>() {
 			public void done(List<ParseObject> devices, ParseException e) {
 				if (e == null) {
 					Log.d(LOG_TAG, "Retrieved " + devices.size() + " devices");
 					if (devices.size() > 0) {
-						// device exists
-						device = (Device) devices.get(0);
-						Log.d(LOG_TAG, "DeviceId[" + device.getDeviceId() + "]");
+						mDevice = (Device) devices.get(0);
+						// only for slave
+						joinGroup("Device A");
+						Log.d(LOG_TAG, "DeviceId[" + mDevice.getDeviceId() + "]");
 					} else {
 						// register user
-						Device user = new Device();
-						user.setDeviceName(deviceName);
-						user.setDeviceId(deviceId);
-						user.saveInBackground(new SaveCallback() {
+						Device slaveDevice = new Device();
+						slaveDevice.setDeviceName(deviceName);
+						slaveDevice.setDeviceId(deviceId);
+						slaveDevice.saveInBackground(new SaveCallback() {
 							@Override
 							public void done(ParseException e) {
 								if (e == null) {
 									Log.d(LOG_TAG, "user registered");
+									ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+									installation.put("device", slaveDevice);
+									installation.saveInBackground();
 								} else {
 									Log.d(LOG_TAG, e.getMessage());
 								}
@@ -81,7 +118,7 @@ public class HomeActivity extends Activity {
 							if (e == null) {
 								Log.d(LOG_TAG, "Data received from server");
 								mediaPlayer = prepareMediaPlayer(data);
-								playMedia(mediaPlayer);
+								// playMedia(mediaPlayer);
 							} else {
 								e.printStackTrace();
 							}
@@ -94,30 +131,48 @@ public class HomeActivity extends Activity {
 		});
 	}
 
-	private void joinGroup(String deviceName) {
+	private void joinGroup(final String deviceName) {
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Device");
 		query.whereEqualTo("deviceName", deviceName);
 		query.findInBackground(new FindCallback<ParseObject>() {
 			public void done(List<ParseObject> devices, ParseException e) {
 				if (e == null) {
 					Log.d(LOG_TAG, "Retrieved " + devices.size() + " devices");
-					Device masterDevice = (Device) devices.get(0);
+					if (devices.size() > 0) {
+						final Device masterDevice = (Device) devices.get(0);
 
-					Group group = new Group();
-					group.setMasterDevice(masterDevice);
-					group.setSlaveDevice(device);
-					group.saveInBackground(new SaveCallback() {
-						@Override
-						public void done(ParseException e) {
-							if (e == null)
-								Log.i(LOG_TAG, "group joined");
-							else
-								e.printStackTrace();
-						}
-					});
-
+						Group group = new Group();
+						group.setMasterDevice(masterDevice);
+						group.setSlaveDevice(mDevice);
+						group.saveInBackground(new SaveCallback() {
+							@Override
+							public void done(ParseException e) {
+								if (e == null) {
+									Log.i(LOG_TAG, "group joined");
+									sendPushNotification(mDevice.getDeviceId(), masterDevice.getDeviceId());
+								} else {
+									e.printStackTrace();
+								}
+							}
+						});
+					} else {
+						Toast.makeText(HomeActivity.this, "No master device available", Toast.LENGTH_SHORT).show();
+					}
 				} else {
 					Log.d(LOG_TAG, "Error: " + e.getMessage());
+				}
+			}
+		});
+	}
+
+	private void sendPushNotification(String slaveDeviceId, String masterDeviceId) {
+		HashMap<String, String> hashMap = new HashMap<String, String>();
+		hashMap.put("slaveDeviceId", slaveDeviceId);
+		hashMap.put("masterDeviceId", masterDeviceId);
+		ParseCloud.callFunctionInBackground("push", hashMap, new FunctionCallback<String>() {
+			public void done(String result, ParseException e) {
+				if (e == null) {
+					Log.i(LOG_TAG, result);
 				}
 			}
 		});
@@ -135,8 +190,6 @@ public class HomeActivity extends Activity {
 
 		// Slave Device
 		registerDevice("Device B");
-		joinGroup("Device A");
-
 	}
 
 	private MediaPlayer prepareMediaPlayer(byte[] mp3SoundByteArray) {
