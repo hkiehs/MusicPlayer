@@ -1,7 +1,9 @@
 package com.tekxpace.musicplayer;
 
-import java.util.HashMap;
 import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,9 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
-import com.parse.FunctionCallback;
 import com.parse.ParseAnalytics;
-import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
@@ -56,15 +56,20 @@ public class SlaveActivity extends Activity {
 		// }
 		// });
 
-		// Create our Installation query
-		ParseQuery pushQuery = ParseInstallation.getQuery();
-		pushQuery.whereEqualTo("device", masterDevice);
+		try {
+			JSONObject data = new JSONObject("{\"action\": \"com.tekxpace.musicplayer.UPDATE_STATUS\",\"name\": \"Vaughn\",\"newsItem\": \"Man bites dog\"}");
+			// Create our Installation query
+			ParseQuery pushQuery = ParseInstallation.getQuery();
+			pushQuery.whereEqualTo("device", masterDevice);
 
-		// Send push notification to query
-		ParsePush push = new ParsePush();
-		push.setQuery(pushQuery); // Set our Installation query
-		push.setMessage(slaveDevice.getDeviceName() + " joined the group.");
-		push.sendInBackground();
+			// Send push notification to query
+			ParsePush push = new ParsePush();
+			push.setQuery(pushQuery); // Set our Installation query
+			push.setData(data);
+			push.sendInBackground();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	private void registerDevice(final String mDeviceName) {
 		final String deviceId = Utility.getUniqueDeviceId(this);
