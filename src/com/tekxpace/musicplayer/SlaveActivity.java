@@ -15,6 +15,7 @@ import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 import com.tekxpace.musicplayer.parse.Device;
@@ -42,19 +43,29 @@ public class SlaveActivity extends Activity {
 		installation.saveInBackground();
 	}
 
-	private void sendPushNotification(String slaveDeviceId, String masterDeviceId) {
-		HashMap<String, String> hashMap = new HashMap<String, String>();
-		hashMap.put("slaveDeviceId", slaveDeviceId);
-		hashMap.put("masterDeviceId", masterDeviceId);
-		ParseCloud.callFunctionInBackground("push", hashMap, new FunctionCallback<String>() {
-			public void done(String result, ParseException e) {
-				if (e == null) {
-					Log.i(LOG_TAG, result);
-				}
-			}
-		});
-	}
+	private void sendPushNotification(Device slaveDevice, Device masterDevice) {
+		// HashMap<String, String> hashMap = new HashMap<String, String>();
+		// hashMap.put("slaveDeviceId", slaveDevice.getDeviceId());
+		// hashMap.put("masterDeviceId", masterDevice.getDeviceId());
+		// ParseCloud.callFunctionInBackground("push", hashMap, new
+		// FunctionCallback<String>() {
+		// public void done(String result, ParseException e) {
+		// if (e == null) {
+		// Log.i(LOG_TAG, result);
+		// }
+		// }
+		// });
 
+		// Create our Installation query
+		ParseQuery pushQuery = ParseInstallation.getQuery();
+		pushQuery.whereEqualTo("device", masterDevice);
+
+		// Send push notification to query
+		ParsePush push = new ParsePush();
+		push.setQuery(pushQuery); // Set our Installation query
+		push.setMessage(slaveDevice.getDeviceName() + " joined the group.");
+		push.sendInBackground();
+	}
 	private void registerDevice(final String mDeviceName) {
 		final String deviceId = Utility.getUniqueDeviceId(this);
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Device");
@@ -113,7 +124,7 @@ public class SlaveActivity extends Activity {
 							public void done(ParseException e) {
 								if (e == null) {
 									Log.i(LOG_TAG, "group joined");
-									sendPushNotification(slaveDevice.getDeviceId(), masterDevice.getDeviceId());
+									sendPushNotification(slaveDevice, masterDevice);
 								} else {
 									e.printStackTrace();
 								}
