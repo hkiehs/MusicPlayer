@@ -116,18 +116,18 @@ public class MasterActivity extends Activity {
 		});
 	}
 
-	private void sendPushNotification(String slaveDeviceId, String masterDeviceId) {
-		HashMap<String, String> hashMap = new HashMap<String, String>();
-		hashMap.put("slaveDeviceId", slaveDeviceId);
-		hashMap.put("masterDeviceId", masterDeviceId);
-		ParseCloud.callFunctionInBackground("push", hashMap, new FunctionCallback<String>() {
-			public void done(String result, ParseException e) {
-				if (e == null) {
-					Log.i(LOG_TAG, result);
-				}
-			}
-		});
-	}
+//	private void sendPushNotification(String slaveDeviceId, String masterDeviceId) {
+//		HashMap<String, String> hashMap = new HashMap<String, String>();
+//		hashMap.put("slaveDeviceId", slaveDeviceId);
+//		hashMap.put("masterDeviceId", masterDeviceId);
+//		ParseCloud.callFunctionInBackground("push", hashMap, new FunctionCallback<String>() {
+//			public void done(String result, ParseException e) {
+//				if (e == null) {
+//					Log.i(LOG_TAG, result);
+//				}
+//			}
+//		});
+//	}
 
 	private MediaPlayer prepareMediaPlayer(byte[] mp3SoundByteArray) {
 		File tempMp3 = null;

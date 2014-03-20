@@ -128,7 +128,7 @@ public class SlaveActivity extends Activity {
 							@Override
 							public void done(ParseException e) {
 								if (e == null) {
-									Log.i(LOG_TAG, "group joined");
+									Log.i(LOG_TAG, "group joined... sending push notification");
 									sendPushNotification(slaveDevice, masterDevice);
 								} else {
 									e.printStackTrace();

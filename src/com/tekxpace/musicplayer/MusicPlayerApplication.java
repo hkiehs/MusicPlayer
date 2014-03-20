@@ -18,6 +18,7 @@ public class MusicPlayerApplication extends Application {
 		ParseObject.registerSubclass(Group.class);
 
 		Parse.initialize(this, "nrXYlTqKzxmp0mSynnblthvX5HcwdNykXTNoekWs", "lNCLSapoIIUCVylghKSR0lT4Gvb78FEo7kjHToSd");
+		Parse.setLogLevel(Parse.LOG_LEVEL_VERBOSE);
 		// PushService.setDefaultPushCallback(this, HomeActivity.class);
 		// ParseUser.enableAutomaticUser();
 
