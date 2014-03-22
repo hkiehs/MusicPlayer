@@ -1,7 +1,5 @@
 package com.tekxpace.musicplayer;
 
-import java.util.Iterator;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.tekxpace.musicplayer.model.ConnectionModel;
 
 public class CustomPushReceiver extends BroadcastReceiver {
 	private static final String LOG_TAG = "PushReceiver";
@@ -25,17 +25,23 @@ public class CustomPushReceiver extends BroadcastReceiver {
 
 			Log.d(LOG_TAG, "got action " + action + " on channel " + channel + " with:");
 
-			StringBuilder builder = new StringBuilder();
+			// StringBuilder builder = new StringBuilder();
+			//
+			// Iterator itr = json.keys();
+			// while (itr.hasNext()) {
+			// String key = (String) itr.next();
+			// Log.d(LOG_TAG, "..." + key + " => " + json.getString(key));
+			// builder.append(json.getString(key) + " ");
+			// }
 
-			Iterator itr = json.keys();
-			while (itr.hasNext()) {
-				String key = (String) itr.next();
-				Log.d(LOG_TAG, "..." + key + " => " + json.getString(key));
-				builder.append(json.getString(key) + " ");
+			ConnectionModel connectionModel = ConnectionModel.fromJson(json.toString());
+			if (MasterActivity.tvConnectionStatus != null) {
+				MasterActivity.tvConnectionStatus.setText(connectionModel.deviceName + " " + connectionModel.status);
+				
+				
+				
+				
 			}
-
-			if (MasterActivity.tvConnectionStatus != null)
-				MasterActivity.tvConnectionStatus.setText(builder.toString());
 
 		} catch (JSONException e) {
 			Log.d(LOG_TAG, "JSONException: " + e.getMessage());

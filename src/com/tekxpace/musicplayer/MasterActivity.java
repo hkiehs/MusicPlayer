@@ -54,11 +54,10 @@ public class MasterActivity extends Activity {
 
 	private void registerParseInstallation(Device device) {
 		ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-		installation.put("device", device);
+		installation.put("deviceId", device.getDeviceId());
 		installation.saveInBackground();
 	}
 
-	
 	private void registerDevice(final String mDeviceName) {
 		final String deviceId = Utility.getUniqueDeviceId(this);
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Device");

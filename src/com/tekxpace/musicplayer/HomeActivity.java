@@ -8,6 +8,9 @@ public class HomeActivity extends SlaveActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// master device should generate the channel
+		// slave device should subscribe to that channel
 	}
 
 }

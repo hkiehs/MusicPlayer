@@ -19,6 +19,7 @@ import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
+import com.tekxpace.musicplayer.model.ConnectionModel;
 import com.tekxpace.musicplayer.parse.Device;
 import com.tekxpace.musicplayer.parse.Group;
 import com.tekxpace.musicplayer.utility.Utility;
@@ -51,23 +52,6 @@ public class SlaveActivity extends Activity {
 		installation.saveInBackground();
 	}
 
-	private void sendPushNotification(Device slaveDevice, Device masterDevice) {
-		try {
-			JSONObject data = new JSONObject(
-					"{\"action\": \"com.tekxpace.musicplayer.UPDATE_STATUS\",\"name\": \"Device B\",\"newsItem\": \"Connected.\"}");
-			// Create our Installation query
-			ParseQuery<ParseInstallation> pushQuery = ParseInstallation.getQuery();
-			pushQuery.whereEqualTo("device", masterDevice);
-
-			// Send push notification to query
-			ParsePush push = new ParsePush();
-			push.setQuery(pushQuery); // Set our Installation query
-			push.setData(data);
-			push.sendInBackground();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
 	private void registerDevice(final String mDeviceName) {
 		final String deviceId = Utility.getUniqueDeviceId(this);
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Device");
@@ -128,7 +112,14 @@ public class SlaveActivity extends Activity {
 							public void done(ParseException e) {
 								if (e == null) {
 									Log.i(LOG_TAG, "group joined... sending push notification");
-									sendPushNotification(slaveDevice, masterDevice);
+
+									ConnectionModel connectionModel = new ConnectionModel();
+									connectionModel.deviceName = slaveDevice.getDeviceName();
+									connectionModel.deviceId = slaveDevice.getDeviceId();
+									connectionModel.status = "Connected";
+									connectionModel.action = "com.tekxpace.musicplayer.UPDATE_STATUS";
+
+									Utility.sendPushNotification(connectionModel.toJson(), masterDevice);
 								} else {
 									e.printStackTrace();
 								}
