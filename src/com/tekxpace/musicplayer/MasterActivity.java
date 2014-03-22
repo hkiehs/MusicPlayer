@@ -12,6 +12,7 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.parse.FindCallback;
 import com.parse.GetDataCallback;
@@ -30,15 +31,21 @@ public class MasterActivity extends Activity {
 	private static final String LOG_TAG = "MasterActivity";
 
 	private MediaPlayer mediaPlayer = null;
+	private Device newDevice = null;
 	private Device mDevice = null;
 
-
+	public static TextView tvDevice, tvConnectionStatus;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 		ParseAnalytics.trackAppOpened(getIntent());
+
+		tvDevice = (TextView) findViewById(R.id.textViewDevice);
+		tvConnectionStatus = (TextView) findViewById(R.id.textViewConnectionStatus);
+
+		tvDevice.setText("Master device: Device A");
 
 		// Master Device
 		registerDevice("Device A");
@@ -51,6 +58,7 @@ public class MasterActivity extends Activity {
 		installation.saveInBackground();
 	}
 
+	
 	private void registerDevice(final String mDeviceName) {
 		final String deviceId = Utility.getUniqueDeviceId(this);
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Device");
@@ -65,15 +73,17 @@ public class MasterActivity extends Activity {
 						registerParseInstallation(mDevice);
 					} else {
 						// register new user
-						mDevice = new Device();
-						mDevice.setDeviceName(mDeviceName);
-						mDevice.setDeviceId(deviceId);
-						mDevice.saveInBackground(new SaveCallback() {
+						newDevice = new Device();
+						newDevice.setDeviceName(mDeviceName);
+						newDevice.setDeviceId(deviceId);
+						newDevice.saveInBackground(new SaveCallback() {
 							@Override
 							public void done(ParseException e) {
 								if (e == null) {
 									Log.d(LOG_TAG, "New user");
-									registerParseInstallation(mDevice);
+									registerParseInstallation(newDevice);
+									mDevice = newDevice;
+									newDevice = null;
 								} else {
 									Log.d(LOG_TAG, e.getMessage());
 								}

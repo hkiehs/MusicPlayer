@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -25,13 +26,20 @@ import com.tekxpace.musicplayer.utility.Utility;
 public class SlaveActivity extends Activity {
 	private static final String LOG_TAG = "SlaveActivity";
 
+	private Device newDevice = null;
 	private Device mDevice = null;
+	public static TextView tvDevice, tvConnectionStatus;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 		ParseAnalytics.trackAppOpened(getIntent());
+
+		tvDevice = (TextView) findViewById(R.id.textViewDevice);
+		tvConnectionStatus = (TextView) findViewById(R.id.textViewConnectionStatus);
+
+		tvDevice.setText("Slave device: Device B");
 
 		// Slave Device
 		registerDevice("Device B");
@@ -44,22 +52,11 @@ public class SlaveActivity extends Activity {
 	}
 
 	private void sendPushNotification(Device slaveDevice, Device masterDevice) {
-		// HashMap<String, String> hashMap = new HashMap<String, String>();
-		// hashMap.put("slaveDeviceId", slaveDevice.getDeviceId());
-		// hashMap.put("masterDeviceId", masterDevice.getDeviceId());
-		// ParseCloud.callFunctionInBackground("push", hashMap, new
-		// FunctionCallback<String>() {
-		// public void done(String result, ParseException e) {
-		// if (e == null) {
-		// Log.i(LOG_TAG, result);
-		// }
-		// }
-		// });
-
 		try {
-			JSONObject data = new JSONObject("{\"action\": \"com.tekxpace.musicplayer.UPDATE_STATUS\",\"name\": \"Vaughn\",\"newsItem\": \"Man bites dog\"}");
+			JSONObject data = new JSONObject(
+					"{\"action\": \"com.tekxpace.musicplayer.UPDATE_STATUS\",\"name\": \"Device B\",\"newsItem\": \"Connected.\"}");
 			// Create our Installation query
-			ParseQuery pushQuery = ParseInstallation.getQuery();
+			ParseQuery<ParseInstallation> pushQuery = ParseInstallation.getQuery();
 			pushQuery.whereEqualTo("device", masterDevice);
 
 			// Send push notification to query
@@ -88,16 +85,18 @@ public class SlaveActivity extends Activity {
 						joinGroup("Device A", mDevice);
 					} else {
 						// register new user
-						mDevice = new Device();
-						mDevice.setDeviceName(mDeviceName);
-						mDevice.setDeviceId(deviceId);
-						mDevice.saveInBackground(new SaveCallback() {
+						newDevice = new Device();
+						newDevice.setDeviceName(mDeviceName);
+						newDevice.setDeviceId(deviceId);
+						newDevice.saveInBackground(new SaveCallback() {
 							@Override
 							public void done(ParseException e) {
 								if (e == null) {
 									Log.d(LOG_TAG, "New user");
-									registerParseInstallation(mDevice);
-									joinGroup("Device A", mDevice);
+									registerParseInstallation(newDevice);
+									joinGroup("Device A", newDevice);
+									mDevice = newDevice;
+									newDevice = null;
 								} else {
 									Log.d(LOG_TAG, e.getMessage());
 								}

@@ -24,11 +24,19 @@ public class CustomPushReceiver extends BroadcastReceiver {
 			JSONObject json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
 
 			Log.d(LOG_TAG, "got action " + action + " on channel " + channel + " with:");
+
+			StringBuilder builder = new StringBuilder();
+
 			Iterator itr = json.keys();
 			while (itr.hasNext()) {
 				String key = (String) itr.next();
 				Log.d(LOG_TAG, "..." + key + " => " + json.getString(key));
+				builder.append(json.getString(key) + " ");
 			}
+
+			if (MasterActivity.tvConnectionStatus != null)
+				MasterActivity.tvConnectionStatus.setText(builder.toString());
+
 		} catch (JSONException e) {
 			Log.d(LOG_TAG, "JSONException: " + e.getMessage());
 		}
