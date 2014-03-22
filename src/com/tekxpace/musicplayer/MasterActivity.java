@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
@@ -15,10 +14,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.parse.FindCallback;
-import com.parse.FunctionCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseAnalytics;
-import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseInstallation;
@@ -34,6 +31,8 @@ public class MasterActivity extends Activity {
 
 	private MediaPlayer mediaPlayer = null;
 	private Device mDevice = null;
+
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -116,18 +115,20 @@ public class MasterActivity extends Activity {
 		});
 	}
 
-//	private void sendPushNotification(String slaveDeviceId, String masterDeviceId) {
-//		HashMap<String, String> hashMap = new HashMap<String, String>();
-//		hashMap.put("slaveDeviceId", slaveDeviceId);
-//		hashMap.put("masterDeviceId", masterDeviceId);
-//		ParseCloud.callFunctionInBackground("push", hashMap, new FunctionCallback<String>() {
-//			public void done(String result, ParseException e) {
-//				if (e == null) {
-//					Log.i(LOG_TAG, result);
-//				}
-//			}
-//		});
-//	}
+	// private void sendPushNotification(String slaveDeviceId, String
+	// masterDeviceId) {
+	// HashMap<String, String> hashMap = new HashMap<String, String>();
+	// hashMap.put("slaveDeviceId", slaveDeviceId);
+	// hashMap.put("masterDeviceId", masterDeviceId);
+	// ParseCloud.callFunctionInBackground("push", hashMap, new
+	// FunctionCallback<String>() {
+	// public void done(String result, ParseException e) {
+	// if (e == null) {
+	// Log.i(LOG_TAG, result);
+	// }
+	// }
+	// });
+	// }
 
 	private MediaPlayer prepareMediaPlayer(byte[] mp3SoundByteArray) {
 		File tempMp3 = null;
