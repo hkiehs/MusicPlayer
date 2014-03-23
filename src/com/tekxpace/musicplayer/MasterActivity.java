@@ -32,8 +32,8 @@ public class MasterActivity extends NsdChatActivity {
 	private Device newDevice = null;
 
 	public static TextView tvConnectionStatus;
-	public static TextView tvDevice;
 	public static Button btPlayPause;
+	public static TextView tvDevice;
 
 	boolean mDeviceReady = false;
 
@@ -43,9 +43,9 @@ public class MasterActivity extends NsdChatActivity {
 		setContentView(R.layout.activity_master);
 		ParseAnalytics.trackAppOpened(getIntent());
 
-		tvDevice = (TextView) findViewById(R.id.textViewDevice);
 		tvConnectionStatus = (TextView) findViewById(R.id.textViewConnectionStatus);
 		btPlayPause = (Button) findViewById(R.id.buttonPlayPause);
+		tvDevice = (TextView) findViewById(R.id.textViewDevice);
 
 		tvDevice.setText("Master device: Device A");
 
@@ -55,6 +55,9 @@ public class MasterActivity extends NsdChatActivity {
 		btPlayPause.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				
+				NsdChatActivity.activity.clickSend("Woohooo... Yahoooo");
+				
 				if (mDeviceReady) {
 					String state = btPlayPause.getText().toString();
 					int currentPlayBackPosition = mediaPlayer.getCurrentPosition();
@@ -68,12 +71,19 @@ public class MasterActivity extends NsdChatActivity {
 						// send pause push
 						playPause(false, currentPlayBackPosition);
 					}
+
 				} else {
 					Log.d(LOG_TAG, "Master device not ready");
 				}
 
 			}
 		});
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		clickAdvertise();
 	}
 
 	private void playPause(boolean isPlay, int currentPosition) {

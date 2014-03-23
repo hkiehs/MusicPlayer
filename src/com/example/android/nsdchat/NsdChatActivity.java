@@ -25,6 +25,7 @@ import android.util.Log;
 
 public class NsdChatActivity extends Activity {
 	public static final String TAG = "NsdChat";
+	public static NsdChatActivity activity;
 
 	private Handler mUpdateHandler;
 	ChatConnection mConnection;
@@ -35,6 +36,8 @@ public class NsdChatActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		activity = this;
+
 		mUpdateHandler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
@@ -44,11 +47,10 @@ public class NsdChatActivity extends Activity {
 		};
 
 		mConnection = new ChatConnection(mUpdateHandler);
-
 		mNsdHelper = new NsdHelper(this);
 		mNsdHelper.initializeNsd();
 	}
-	
+
 	public void clickAdvertise() {
 		// Register service
 		if (mConnection.getLocalPort() > -1) {
@@ -56,6 +58,7 @@ public class NsdChatActivity extends Activity {
 		} else {
 			Log.d(TAG, "ServerSocket isn't bound.");
 		}
+		Log.d(TAG, "Master registered");
 	}
 
 	public void clickDiscover() {
@@ -91,6 +94,7 @@ public class NsdChatActivity extends Activity {
 		super.onResume();
 		if (mNsdHelper != null) {
 			mNsdHelper.discoverServices();
+			Log.d(TAG, "Master started discovery");
 		}
 	}
 
@@ -100,4 +104,5 @@ public class NsdChatActivity extends Activity {
 		mConnection.tearDown();
 		super.onDestroy();
 	}
+
 }

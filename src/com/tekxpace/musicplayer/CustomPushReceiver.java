@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.android.nsdchat.NsdChatActivity;
 import com.parse.FindCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
@@ -65,6 +66,8 @@ public class CustomPushReceiver extends BroadcastReceiver {
 				} else if (connectionModel.status.equalsIgnoreCase(Utility.STATUS_READY)) {
 					Toast.makeText(context, "Slave device Ready", Toast.LENGTH_SHORT).show();
 					MasterActivity.slaveDeviceId = connectionModel.senderDeviceId;
+					NsdChatActivity.activity.clickConnect();
+					Log.d(LOG_TAG, "Requested master connection");
 					// enable master to send play request
 					MasterActivity.btPlayPause.setEnabled(true);
 				} else if (connectionModel.status.equalsIgnoreCase(Utility.STATUS_PLAY)) {
@@ -114,6 +117,10 @@ public class CustomPushReceiver extends BroadcastReceiver {
 								ready.action = Utility.ACTION_UPDATE_STATUS;
 								ready.senderDeviceId = SlaveActivity.mDevice.getDeviceId();
 								ready.senderDeviceName = SlaveActivity.mDevice.getDeviceName();
+
+								// register and connect
+								NsdChatActivity.activity.clickAdvertise();
+								NsdChatActivity.activity.clickConnect();
 
 								// notifying master for slave ready
 								Utility.sendPushNotification(ready.toJson(), senderDeviceId);
