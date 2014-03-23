@@ -23,17 +23,17 @@ import com.tekxpace.musicplayer.utility.Utility;
 public class SlaveActivity extends Activity {
 	private static final String LOG_TAG = "SlaveActivity";
 
+	public static TextView tvDevice;
+	public static TextView tvConnectionStatus;
+	public static MediaPlayer mediaPlayer;
+
 	private Device newDevice = null;
-	private Device mDevice = null;
-	
-	public static TextView tvDevice, tvConnectionStatus;
-	
-	public static MediaPlayer mediaPlayer = null;
+	public static Device mDevice = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_home);
+		setContentView(R.layout.activity_slave);
 		ParseAnalytics.trackAppOpened(getIntent());
 
 		tvDevice = (TextView) findViewById(R.id.textViewDevice);
@@ -109,7 +109,7 @@ public class SlaveActivity extends Activity {
 									ConnectionModel connectionModel = new ConnectionModel();
 									connectionModel.senderDeviceName = slaveDevice.getDeviceName();
 									connectionModel.senderDeviceId = slaveDevice.getDeviceId();
-									connectionModel.status = "Connected";
+									connectionModel.status = Utility.STATUS_CONNECTED;
 									connectionModel.action = Utility.ACTION_UPDATE_STATUS;
 
 									Utility.sendPushNotification(connectionModel.toJson(), masterDevice.getDeviceId());

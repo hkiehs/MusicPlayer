@@ -36,6 +36,11 @@ public class Utility {
 	public static final String ACTION_UPDATE_STATUS = "com.tekxpace.musicplayer.UPDATE_STATUS";
 	public static final String ACTION_PAYLOAD_INFO = "com.tekxpace.musicplayer.PAYLOAD_INFO";
 
+	public static final String STATUS_CONNECTED = "connected";
+	public static final String STATUS_READY = "ready";
+	public static final String STATUS_PLAY = "play";
+	public static final String STATUS_PAUSE = "pause";
+
 	public static String getUniqueDeviceId(Context context) {
 		final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 		final String tmDevice, tmSerial, androidId;
@@ -189,10 +194,17 @@ public class Utility {
 			mediaPlayer.start();
 	}
 
+	public static void pauseMedia(MediaPlayer mediaPlayer) {
+		Log.d(LOG_TAG, "Pausing media");
+		if (mediaPlayer != null)
+			mediaPlayer.pause();
+	}
+
 	private static void killMediaPlayer(MediaPlayer mediaPlayer) {
 		if (mediaPlayer != null) {
 			try {
 				mediaPlayer.release();
+				mediaPlayer = null;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

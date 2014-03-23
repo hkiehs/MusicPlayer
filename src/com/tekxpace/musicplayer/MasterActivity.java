@@ -10,6 +10,8 @@ import android.app.Activity;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
@@ -20,6 +22,7 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
+import com.tekxpace.musicplayer.model.ConnectionModel;
 import com.tekxpace.musicplayer.parse.Device;
 import com.tekxpace.musicplayer.utility.Utility;
 
@@ -27,26 +30,61 @@ public class MasterActivity extends Activity {
 	private static final String LOG_TAG = "MasterActivity";
 	public static final String songObjectId = "3UljCjhopM";
 
+	public static String slaveDeviceId;
+
 	private MediaPlayer mediaPlayer = null;
 	private Device newDevice = null;
 	public static Device mDevice = null;
 
 	public static TextView tvDevice, tvConnectionStatus;
+	public static Button btPlayPause;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_home);
+		setContentView(R.layout.activity_master);
 		ParseAnalytics.trackAppOpened(getIntent());
 
 		tvDevice = (TextView) findViewById(R.id.textViewDevice);
 		tvConnectionStatus = (TextView) findViewById(R.id.textViewConnectionStatus);
+		btPlayPause = (Button) findViewById(R.id.buttonPlayPause);
 
 		tvDevice.setText("Master device: Device A");
 
 		// Master Device
 		registerDevice("Device A");
 
+		btPlayPause.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				String state = btPlayPause.getText().toString();
+				if (state.equalsIgnoreCase(Utility.STATUS_PLAY)) {
+					btPlayPause.setText("Pause");
+					// send play push
+					playPause(true);
+				} else {
+					btPlayPause.setText("Play");
+					// send pause push
+					playPause(false);
+				}
+			}
+		});
+	}
+
+	private void playPause(boolean isPlay) {
+		// send notification to play the song to slave
+		ConnectionModel play = new ConnectionModel();
+		if (isPlay)
+			play.status = Utility.STATUS_PLAY;
+		else
+			play.status = Utility.STATUS_PAUSE;
+
+		play.action = Utility.ACTION_UPDATE_STATUS;
+		play.senderDeviceId = MasterActivity.mDevice.getDeviceId();
+		play.senderDeviceName = MasterActivity.mDevice.getDeviceName();
+
+		// notifying slave to play
+		Utility.sendPushNotification(play.toJson(), slaveDeviceId);
 	}
 
 	private void registerDevice(final String mDeviceName) {

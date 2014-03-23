@@ -1,6 +1,5 @@
 package com.tekxpace.musicplayer;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONException;
@@ -9,12 +8,10 @@ import org.json.JSONObject;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -22,8 +19,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.tekxpace.musicplayer.model.ConnectionModel;
 import com.tekxpace.musicplayer.model.PayloadModel;
-import com.tekxpace.musicplayer.parse.Device;
-import com.tekxpace.musicplayer.parse.Media;
 import com.tekxpace.musicplayer.utility.Utility;
 
 public class CustomPushReceiver extends BroadcastReceiver {
@@ -32,7 +27,6 @@ public class CustomPushReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		final Context mContext = context;
-		Toast.makeText(context, "Notification received", Toast.LENGTH_SHORT).show();
 		Log.d(LOG_TAG, "Notification received : CustomPushReceiver");
 		try {
 			String action = intent.getAction();
@@ -51,24 +45,37 @@ public class CustomPushReceiver extends BroadcastReceiver {
 			// }
 
 			if (action.equalsIgnoreCase(Utility.ACTION_UPDATE_STATUS)) {
-
 				ConnectionModel connectionModel = ConnectionModel.fromJson(jsonObject.toString());
 
-				if (MasterActivity.tvConnectionStatus != null) {
-					MasterActivity.tvConnectionStatus.setText(connectionModel.senderDeviceName + " " + connectionModel.status);
+				if (connectionModel.status.equalsIgnoreCase(Utility.STATUS_CONNECTED)) {
+					Toast.makeText(context, "Connected", Toast.LENGTH_SHORT).show();
+					if (MasterActivity.tvConnectionStatus != null) {
+						MasterActivity.tvConnectionStatus.setText(connectionModel.senderDeviceName + " " + connectionModel.status);
 
-					// send payload info using push to slave with objectId
+						// send payload info using push to slave with objectId
+						PayloadModel payloadModel = new PayloadModel();
+						payloadModel.action = Utility.ACTION_PAYLOAD_INFO;
+						payloadModel.senderDeviceId = MasterActivity.mDevice.getDeviceId();
+						payloadModel.status = "Song info received";
+						payloadModel.songObjectId = MasterActivity.songObjectId;
 
-					PayloadModel payloadModel = new PayloadModel();
-					payloadModel.action = Utility.ACTION_PAYLOAD_INFO;
-					payloadModel.senderDeviceId = MasterActivity.mDevice.getDeviceId();
-					payloadModel.status = "Song info received";
-					payloadModel.songObjectId = MasterActivity.songObjectId;
+						String payloadJson = payloadModel.toJson();
+						Utility.sendPushNotification(payloadJson, connectionModel.senderDeviceId);
+					}
+				} else if (connectionModel.status.equalsIgnoreCase(Utility.STATUS_READY)) {
+					Toast.makeText(context, "Slave device Ready", Toast.LENGTH_SHORT).show();
+					MasterActivity.slaveDeviceId = connectionModel.senderDeviceId;
+					// enable master to send play request
+					MasterActivity.btPlayPause.setEnabled(true);
+				} else if (connectionModel.status.equalsIgnoreCase(Utility.STATUS_PLAY)) {
+					// ask devices to play
+					Utility.playMedia(SlaveActivity.mediaPlayer);
 
-					String payloadJson = payloadModel.toJson();
-
-					Utility.sendPushNotification(payloadJson, connectionModel.senderDeviceId);
+				} else if (connectionModel.status.equalsIgnoreCase(Utility.STATUS_PAUSE)) {
+					// ask devices to pause
+					Utility.pauseMedia(SlaveActivity.mediaPlayer);
 				}
+
 			} else if (action.equalsIgnoreCase(Utility.ACTION_PAYLOAD_INFO)) {
 				PayloadModel payloadModel = PayloadModel.fromJson(jsonObject.toString());
 				Log.d(LOG_TAG, payloadModel.toJson());
@@ -76,6 +83,16 @@ public class CustomPushReceiver extends BroadcastReceiver {
 				if (SlaveActivity.tvConnectionStatus != null) {
 					SlaveActivity.tvConnectionStatus.setText(payloadModel.status);
 					receiveMediaFromServer(mContext, payloadModel.songObjectId);
+
+					// notify master device that the slave is ready to play song
+					ConnectionModel ready = new ConnectionModel();
+					ready.status = Utility.STATUS_READY;
+					ready.action = Utility.ACTION_UPDATE_STATUS;
+					ready.senderDeviceId = SlaveActivity.mDevice.getDeviceId();
+					ready.senderDeviceName = SlaveActivity.mDevice.getDeviceName();
+
+					// notifying master for slave ready
+					Utility.sendPushNotification(ready.toJson(), payloadModel.senderDeviceId);
 				}
 			}
 
@@ -83,25 +100,22 @@ public class CustomPushReceiver extends BroadcastReceiver {
 			Log.d(LOG_TAG, "JSONException: " + e.getMessage());
 		}
 	}
-
 	private void receiveMediaFromServer(final Context context, String objectId) {
 		// request to receive file from server
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Media");
 		query.whereEqualTo(Utility.OBJECT_ID, objectId);
 		query.setTrace(true);
+		// query.setCachePolicy(ParseQuery.CachePolicy.CACHE_THEN_NETWORK);
 		query.findInBackground(new FindCallback<ParseObject>() {
 			public void done(List<ParseObject> users, ParseException e) {
 				if (e == null) {
-					Log.d(LOG_TAG, "Retrieved " + users.size() + " files");
+					Log.d(LOG_TAG, "received " + users.size() + "song file");
 					ParseFile mediaFile = (ParseFile) users.get(0).get("mediaFile");
 					mediaFile.getDataInBackground(new GetDataCallback() {
 						public void done(byte[] data, ParseException e) {
 							if (e == null) {
-								Log.d(LOG_TAG, "Data received from server");
-								MediaPlayer mediaPlayer = null;
-								mediaPlayer = Utility.prepareMediaPlayer(context, mediaPlayer, data);
-								Utility.playMedia(mediaPlayer);
-								// playMedia(mediaPlayer);
+								Log.d(LOG_TAG, "song downloaded from server");
+								SlaveActivity.mediaPlayer = Utility.prepareMediaPlayer(context, SlaveActivity.mediaPlayer, data);
 							} else {
 								e.printStackTrace();
 							}
