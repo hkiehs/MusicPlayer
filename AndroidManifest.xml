@@ -55,6 +55,7 @@
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.tekxpace.musicplayer.UPDATE_STATUS" />
+                <action android:name="com.tekxpace.musicplayer.PAYLOAD_INFO" />
             </intent-filter>
         </receiver>
         

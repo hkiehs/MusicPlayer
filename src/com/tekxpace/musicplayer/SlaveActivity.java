@@ -113,7 +113,7 @@ public class SlaveActivity extends Activity {
 									connectionModel.deviceName = slaveDevice.getDeviceName();
 									connectionModel.deviceId = slaveDevice.getDeviceId();
 									connectionModel.status = "Connected";
-									connectionModel.action = "com.tekxpace.musicplayer.UPDATE_STATUS";
+									connectionModel.action = Utility.ACTION_UPDATE_STATUS;
 
 									Utility.sendPushNotification(connectionModel.toJson(), masterDevice);
 								} else {

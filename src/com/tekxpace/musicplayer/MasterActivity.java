@@ -26,6 +26,7 @@ import com.tekxpace.musicplayer.utility.Utility;
 
 public class MasterActivity extends Activity {
 	private static final String LOG_TAG = "MasterActivity";
+	public static final String songObjectId = "3UljCjhopM";
 
 	private MediaPlayer mediaPlayer = null;
 	private Device newDevice = null;
@@ -62,12 +63,12 @@ public class MasterActivity extends Activity {
 		query.findInBackground(new FindCallback<ParseObject>() {
 			public void done(List<ParseObject> devices, ParseException e) {
 				if (e == null) {
-
+					
 					if (devices.size() > 0) {
 						Log.d(LOG_TAG, "Old user");
 						mDevice = (Device) devices.get(0);
 						registerParseInstallation(mDevice);
-						receiveMediaFromServer(mDevice, "3UljCjhopM");
+						receiveMediaFromServer(mDevice, songObjectId);
 						// Utility.uploadFileToServer(MasterActivity.this,
 						// mDevice);
 					} else {
@@ -81,7 +82,7 @@ public class MasterActivity extends Activity {
 								if (e == null) {
 									Log.d(LOG_TAG, "New user");
 									registerParseInstallation(newDevice);
-									receiveMediaFromServer(newDevice, "3UljCjhopM");
+									receiveMediaFromServer(newDevice, songObjectId);
 									// Utility.uploadFileToServer(MasterActivity.this,
 									// newDevice);
 									mDevice = newDevice;

@@ -30,6 +30,9 @@ public class Utility {
 	public final static String USER_DEVICE = "userDevice";
 	public final static String OBJECT_ID = "objectId";
 
+	public static final String ACTION_UPDATE_STATUS = "com.tekxpace.musicplayer.UPDATE_STATUS";
+	public static final String ACTION_PAYLOAD_INFO = "com.tekxpace.musicplayer.PAYLOAD_INFO";
+
 	public static String getUniqueDeviceId(Context context) {
 		final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 		final String tmDevice, tmSerial, androidId;
