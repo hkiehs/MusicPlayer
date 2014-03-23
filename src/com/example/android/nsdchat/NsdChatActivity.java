@@ -22,7 +22,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.View;
 
 public class NsdChatActivity extends Activity {
 	public static final String TAG = "NsdChat";
@@ -48,9 +47,9 @@ public class NsdChatActivity extends Activity {
 
 		mNsdHelper = new NsdHelper(this);
 		mNsdHelper.initializeNsd();
-
 	}
-	public void clickAdvertise(View v) {
+	
+	public void clickAdvertise() {
 		// Register service
 		if (mConnection.getLocalPort() > -1) {
 			mNsdHelper.registerService(mConnection.getLocalPort());
