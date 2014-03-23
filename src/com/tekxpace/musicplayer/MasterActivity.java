@@ -1,9 +1,5 @@
 package com.tekxpace.musicplayer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 import android.app.Activity;
@@ -33,11 +29,14 @@ public class MasterActivity extends Activity {
 	public static String slaveDeviceId;
 
 	private MediaPlayer mediaPlayer = null;
+
 	private Device newDevice = null;
 	public static Device mDevice = null;
 
 	public static TextView tvDevice, tvConnectionStatus;
 	public static Button btPlayPause;
+
+	boolean mDeviceReady = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -57,28 +56,39 @@ public class MasterActivity extends Activity {
 		btPlayPause.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				String state = btPlayPause.getText().toString();
-				if (state.equalsIgnoreCase(Utility.STATUS_PLAY)) {
-					btPlayPause.setText("Pause");
-					// send play push
-					playPause(true);
+				if (mDeviceReady) {
+					String state = btPlayPause.getText().toString();
+					int currentPlayBackPosition = mediaPlayer.getCurrentPosition();
+
+					if (state.equalsIgnoreCase(Utility.STATUS_PLAY)) {
+						btPlayPause.setText("Pause");
+						// send play push
+						playPause(true, currentPlayBackPosition);
+					} else {
+						btPlayPause.setText("Play");
+						// send pause push
+						playPause(false, currentPlayBackPosition);
+					}
 				} else {
-					btPlayPause.setText("Play");
-					// send pause push
-					playPause(false);
+					Log.d(LOG_TAG, "Master device not ready");
 				}
+
 			}
 		});
 	}
 
-	private void playPause(boolean isPlay) {
+	private void playPause(boolean isPlay, int currentPosition) {
 		// send notification to play the song to slave
 		ConnectionModel play = new ConnectionModel();
-		if (isPlay)
+		if (isPlay) {
+			Utility.playMedia(mediaPlayer, currentPosition);
 			play.status = Utility.STATUS_PLAY;
-		else
+		} else {
+			Utility.pauseMedia(mediaPlayer, currentPosition);
 			play.status = Utility.STATUS_PAUSE;
+		}
 
+		play.playBackPosition = currentPosition;
 		play.action = Utility.ACTION_UPDATE_STATUS;
 		play.senderDeviceId = MasterActivity.mDevice.getDeviceId();
 		play.senderDeviceName = MasterActivity.mDevice.getDeviceName();
@@ -99,7 +109,7 @@ public class MasterActivity extends Activity {
 						Log.d(LOG_TAG, "Old user");
 						mDevice = (Device) devices.get(0);
 						Utility.registerParseInstallation(mDevice);
-						// receiveMediaFromServer(mDevice, songObjectId);
+						receiveMediaFromServer(mDevice, songObjectId);
 						// Utility.uploadFileToServer(MasterActivity.this,
 						// mDevice);
 					} else {
@@ -113,8 +123,7 @@ public class MasterActivity extends Activity {
 								if (e == null) {
 									Log.d(LOG_TAG, "New user");
 									Utility.registerParseInstallation(newDevice);
-									// receiveMediaFromServer(newDevice,
-									// songObjectId);
+									receiveMediaFromServer(newDevice, songObjectId);
 									// Utility.uploadFileToServer(MasterActivity.this,
 									// newDevice);
 									mDevice = newDevice;
@@ -136,7 +145,6 @@ public class MasterActivity extends Activity {
 	private void receiveMediaFromServer(Device device, String objectId) {
 		// request to receive file from server
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Media");
-		query.whereEqualTo(Utility.USER_DEVICE, device);
 		query.whereEqualTo(Utility.OBJECT_ID, objectId);
 		query.findInBackground(new FindCallback<ParseObject>() {
 			public void done(List<ParseObject> users, ParseException e) {
@@ -147,8 +155,8 @@ public class MasterActivity extends Activity {
 						public void done(byte[] data, ParseException e) {
 							if (e == null) {
 								Log.d(LOG_TAG, "Data received from server");
-								mediaPlayer = prepareMediaPlayer(data);
-								// playMedia(mediaPlayer);
+								mediaPlayer = Utility.prepareMediaPlayer(MasterActivity.this, mediaPlayer, data);
+								mDeviceReady = true;
 							} else {
 								e.printStackTrace();
 							}
@@ -161,91 +169,10 @@ public class MasterActivity extends Activity {
 		});
 	}
 
-	// private void sendPushNotification(String slaveDeviceId, String
-	// masterDeviceId) {
-	// HashMap<String, String> hashMap = new HashMap<String, String>();
-	// hashMap.put("slaveDeviceId", slaveDeviceId);
-	// hashMap.put("masterDeviceId", masterDeviceId);
-	// ParseCloud.callFunctionInBackground("push", hashMap, new
-	// FunctionCallback<String>() {
-	// public void done(String result, ParseException e) {
-	// if (e == null) {
-	// Log.i(LOG_TAG, result);
-	// }
-	// }
-	// });
-	// }
-
-	private MediaPlayer prepareMediaPlayer(byte[] mp3SoundByteArray) {
-		File tempMp3 = null;
-		FileInputStream fis = null;
-		try {
-			// create temp file that will hold byte array
-			tempMp3 = File.createTempFile("test", "mp3", getCacheDir());
-			tempMp3.deleteOnExit();
-
-			FileOutputStream fos = new FileOutputStream(tempMp3);
-			fos.write(mp3SoundByteArray);
-			fos.close();
-
-			fis = new FileInputStream(tempMp3);
-			// Tried reusing instance of media player
-			// but that resulted in system crashes...
-			killMediaPlayer();
-			mediaPlayer = new MediaPlayer();
-			// Tried passing path directly, but kept getting
-			// "Prepare failed.: status=0x1"
-			// so using file descriptor instead
-			mediaPlayer.setDataSource(fis.getFD());
-			mediaPlayer.prepare();
-			return mediaPlayer;
-		} catch (IOException e) {
-			Log.d(LOG_TAG, e.getMessage());
-			return null;
-		} finally {
-			if (tempMp3 != null) {
-				tempMp3.delete();
-				Log.d(LOG_TAG, "File deleted");
-			}
-
-			if (fis != null) {
-				try {
-					fis.close();
-					Log.d(LOG_TAG, "InputStream closed");
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	private void playMedia(MediaPlayer mediaPlayer) {
-		Log.d(LOG_TAG, "Playing media");
-		if (mediaPlayer != null)
-			mediaPlayer.start();
-	}
-
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		killMediaPlayer();
+		Utility.killMediaPlayer(mediaPlayer);
 	}
 
-	private void killMediaPlayer() {
-		if (mediaPlayer != null) {
-			try {
-				mediaPlayer.release();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private void playAudio(String url) throws Exception {
-		killMediaPlayer();
-		mediaPlayer = new MediaPlayer();
-		mediaPlayer.setDataSource(url);
-		mediaPlayer.prepare();
-		mediaPlayer.start();
-	}
 }

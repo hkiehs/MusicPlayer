@@ -69,30 +69,19 @@ public class CustomPushReceiver extends BroadcastReceiver {
 					MasterActivity.btPlayPause.setEnabled(true);
 				} else if (connectionModel.status.equalsIgnoreCase(Utility.STATUS_PLAY)) {
 					// ask devices to play
-					Utility.playMedia(SlaveActivity.mediaPlayer);
+					Utility.playMedia(SlaveActivity.mediaPlayer, connectionModel.playBackPosition);
 
 				} else if (connectionModel.status.equalsIgnoreCase(Utility.STATUS_PAUSE)) {
 					// ask devices to pause
-					Utility.pauseMedia(SlaveActivity.mediaPlayer);
+					Utility.pauseMedia(SlaveActivity.mediaPlayer, connectionModel.playBackPosition);
 				}
-
 			} else if (action.equalsIgnoreCase(Utility.ACTION_PAYLOAD_INFO)) {
 				PayloadModel payloadModel = PayloadModel.fromJson(jsonObject.toString());
 				Log.d(LOG_TAG, payloadModel.toJson());
 
 				if (SlaveActivity.tvConnectionStatus != null) {
 					SlaveActivity.tvConnectionStatus.setText(payloadModel.status);
-					receiveMediaFromServer(mContext, payloadModel.songObjectId);
-
-					// notify master device that the slave is ready to play song
-					ConnectionModel ready = new ConnectionModel();
-					ready.status = Utility.STATUS_READY;
-					ready.action = Utility.ACTION_UPDATE_STATUS;
-					ready.senderDeviceId = SlaveActivity.mDevice.getDeviceId();
-					ready.senderDeviceName = SlaveActivity.mDevice.getDeviceName();
-
-					// notifying master for slave ready
-					Utility.sendPushNotification(ready.toJson(), payloadModel.senderDeviceId);
+					receiveMediaFromServer(mContext, payloadModel.songObjectId, payloadModel.senderDeviceId);
 				}
 			}
 
@@ -100,7 +89,8 @@ public class CustomPushReceiver extends BroadcastReceiver {
 			Log.d(LOG_TAG, "JSONException: " + e.getMessage());
 		}
 	}
-	private void receiveMediaFromServer(final Context context, String objectId) {
+
+	private void receiveMediaFromServer(final Context context, String objectId, final String senderDeviceId) {
 		// request to receive file from server
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Media");
 		query.whereEqualTo(Utility.OBJECT_ID, objectId);
@@ -116,6 +106,17 @@ public class CustomPushReceiver extends BroadcastReceiver {
 							if (e == null) {
 								Log.d(LOG_TAG, "song downloaded from server");
 								SlaveActivity.mediaPlayer = Utility.prepareMediaPlayer(context, SlaveActivity.mediaPlayer, data);
+
+								// notify master device that the slave is ready
+								// to play song
+								ConnectionModel ready = new ConnectionModel();
+								ready.status = Utility.STATUS_READY;
+								ready.action = Utility.ACTION_UPDATE_STATUS;
+								ready.senderDeviceId = SlaveActivity.mDevice.getDeviceId();
+								ready.senderDeviceName = SlaveActivity.mDevice.getDeviceName();
+
+								// notifying master for slave ready
+								Utility.sendPushNotification(ready.toJson(), senderDeviceId);
 							} else {
 								e.printStackTrace();
 							}

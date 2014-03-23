@@ -188,19 +188,23 @@ public class Utility {
 		}
 	}
 
-	public static void playMedia(MediaPlayer mediaPlayer) {
+	public static void playMedia(MediaPlayer mediaPlayer, int playBackPosition) {
 		Log.d(LOG_TAG, "Playing media");
-		if (mediaPlayer != null)
+		if (mediaPlayer != null) {
+			mediaPlayer.seekTo(playBackPosition);
 			mediaPlayer.start();
+		}
 	}
 
-	public static void pauseMedia(MediaPlayer mediaPlayer) {
+	public static void pauseMedia(MediaPlayer mediaPlayer, int playBackPosition) {
 		Log.d(LOG_TAG, "Pausing media");
-		if (mediaPlayer != null)
+		if (mediaPlayer != null) {
 			mediaPlayer.pause();
+			mediaPlayer.seekTo(playBackPosition);
+		}
 	}
 
-	private static void killMediaPlayer(MediaPlayer mediaPlayer) {
+	public static void killMediaPlayer(MediaPlayer mediaPlayer) {
 		if (mediaPlayer != null) {
 			try {
 				mediaPlayer.release();
@@ -210,5 +214,28 @@ public class Utility {
 			}
 		}
 	}
+
+	private static void playAudio(MediaPlayer mediaPlayer, String url) throws Exception {
+		killMediaPlayer(mediaPlayer);
+		mediaPlayer = new MediaPlayer();
+		mediaPlayer.setDataSource(url);
+		mediaPlayer.prepare();
+		mediaPlayer.start();
+	}
+
+	// private void sendPushNotification(String slaveDeviceId, String
+	// masterDeviceId) {
+	// HashMap<String, String> hashMap = new HashMap<String, String>();
+	// hashMap.put("slaveDeviceId", slaveDeviceId);
+	// hashMap.put("masterDeviceId", masterDeviceId);
+	// ParseCloud.callFunctionInBackground("push", hashMap, new
+	// FunctionCallback<String>() {
+	// public void done(String result, ParseException e) {
+	// if (e == null) {
+	// Log.i(LOG_TAG, result);
+	// }
+	// }
+	// });
+	// }
 
 }
