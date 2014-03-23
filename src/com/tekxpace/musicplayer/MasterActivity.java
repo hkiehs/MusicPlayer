@@ -1,6 +1,5 @@
 package com.tekxpace.musicplayer;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -8,7 +7,6 @@ import java.io.IOException;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,7 +20,6 @@ import com.parse.ParseFile;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.tekxpace.musicplayer.parse.Device;
 import com.tekxpace.musicplayer.utility.Utility;
@@ -49,12 +46,12 @@ public class MasterActivity extends Activity {
 
 		// Master Device
 		registerDevice("Device A");
-		receiveMediaFromServer();
+		// receiveMediaFromServer();
 	}
 
 	private void registerParseInstallation(Device device) {
 		ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-		installation.put("deviceId", device.getDeviceId());
+		installation.put(Utility.USER_DEVICE, device);
 		installation.saveInBackground();
 	}
 
@@ -70,6 +67,7 @@ public class MasterActivity extends Activity {
 						Log.d(LOG_TAG, "Old user");
 						mDevice = (Device) devices.get(0);
 						registerParseInstallation(mDevice);
+						Utility.uploadFileToServer(MasterActivity.this, mDevice);
 					} else {
 						// register new user
 						newDevice = new Device();
@@ -81,6 +79,7 @@ public class MasterActivity extends Activity {
 								if (e == null) {
 									Log.d(LOG_TAG, "New user");
 									registerParseInstallation(newDevice);
+									Utility.uploadFileToServer(MasterActivity.this, newDevice);
 									mDevice = newDevice;
 									newDevice = null;
 								} else {
@@ -201,62 +200,6 @@ public class MasterActivity extends Activity {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
-	}
-
-	private void uploadFileToServer() {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		byte[] buf = new byte[1024];
-		try {
-			AssetFileDescriptor afd = getAssets().openFd("test.mp3");
-			FileInputStream fis = afd.createInputStream();
-
-			for (int readNum; (readNum = fis.read(buf)) != -1;) {
-				// Writes to this byte array output stream
-				bos.write(buf, 0, readNum);
-				// System.out.println("read " + readNum + " bytes,");
-			}
-			afd.close();
-
-			byte[] bytes = bos.toByteArray();
-
-			// save file to the server
-			ParseFile file = new ParseFile("test.mp3", bytes);
-			file.saveInBackground(new SaveCallback() {
-				@Override
-				public void done(ParseException e) {
-					if (e == null)
-						Log.i(LOG_TAG, "file saved");
-					else
-						e.printStackTrace();
-				}
-			}, new ProgressCallback() {
-				public void done(Integer percentDone) {
-					if (percentDone != null) {
-						Log.i(LOG_TAG, "progress [" + percentDone + "]");
-					}
-				}
-			});
-
-			ParseObject mediaObject = new ParseObject("Media");
-			mediaObject.put("username", "Sheikh Muneeb");
-			mediaObject.put("mediaFile", file);
-			mediaObject.saveInBackground(new SaveCallback() {
-				@Override
-				public void done(ParseException e) {
-					if (e == null) {
-						Log.i(LOG_TAG, "file referenced");
-					} else {
-						e.printStackTrace();
-					}
-				}
-			});
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 

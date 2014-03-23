@@ -7,6 +7,7 @@ import com.parse.ParseACL;
 import com.parse.ParseObject;
 import com.tekxpace.musicplayer.parse.Device;
 import com.tekxpace.musicplayer.parse.Group;
+import com.tekxpace.musicplayer.parse.Media;
 
 public class MusicPlayerApplication extends Application {
 
@@ -16,6 +17,7 @@ public class MusicPlayerApplication extends Application {
 
 		ParseObject.registerSubclass(Device.class);
 		ParseObject.registerSubclass(Group.class);
+		ParseObject.registerSubclass(Media.class);
 
 		Parse.initialize(this, "nrXYlTqKzxmp0mSynnblthvX5HcwdNykXTNoekWs", "lNCLSapoIIUCVylghKSR0lT4Gvb78FEo7kjHToSd");
 		Parse.setLogLevel(Parse.LOG_LEVEL_VERBOSE);

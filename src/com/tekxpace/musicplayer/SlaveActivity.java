@@ -2,9 +2,6 @@ package com.tekxpace.musicplayer;
 
 import java.util.List;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +13,6 @@ import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
-import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 import com.tekxpace.musicplayer.model.ConnectionModel;

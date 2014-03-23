@@ -1,34 +1,58 @@
 package com.tekxpace.musicplayer.parse;
 
 import com.parse.ParseClassName;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.tekxpace.musicplayer.utility.Utility;
 
-/*
- * An extension of ParseObject that makes
- * it more convenient to access information
- * about a given Device 
- */
-
-@ParseClassName("Group")
+@ParseClassName("Media")
 public class Media extends ParseObject {
+	public static String SONG_NAME = "songName";
+	public static String ARTIST_NAME = "artistName";
+	public static String ALBUM_NAME = "albumName";
+	public static String MEDIA_FILE = "mediaFile";
 
 	public Media() {
 		// A default constructor is required.
 	}
 
-	public void setSlaveDevice(Device device) {
-		put("slaveDevice", device);
+	public void setArtistName(String artistName) {
+		put(ARTIST_NAME, artistName);
 	}
 
-	public Device getSlaveDevice() {
-		return (Device) getParseObject("slaveDevice");
+	public String getArtistName() {
+		return getString(ARTIST_NAME);
 	}
 
-	public void setMasterDevice(Device device) {
-		put("masterDevice", device);
+	public void setAlbumName(String albumName) {
+		put(ALBUM_NAME, albumName);
 	}
 
-	public Device getMasterDevice() {
-		return (Device) getParseObject("masterDevice");
+	public String getAlbumName() {
+		return getString(ALBUM_NAME);
+	}
+
+	public void setSongName(String songName) {
+		put(SONG_NAME, songName);
+	}
+
+	public String getSongName() {
+		return getString(SONG_NAME);
+	}
+
+	public void setMediaFile(ParseFile parseFile) {
+		put(MEDIA_FILE, parseFile);
+	}
+
+	public ParseFile getMediaFile() {
+		return getParseFile(MEDIA_FILE);
+	}
+
+	public void setDeviceId(Device device) {
+		put(Utility.USER_DEVICE, device);
+	}
+
+	public Device getDeviceId() {
+		return (Device) getParseObject(Utility.USER_DEVICE);
 	}
 }
