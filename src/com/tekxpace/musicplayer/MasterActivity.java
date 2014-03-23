@@ -49,8 +49,6 @@ public class MasterActivity extends Activity {
 
 	}
 
-	
-
 	private void registerDevice(final String mDeviceName) {
 		final String deviceId = Utility.getUniqueDeviceId(this);
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Device");
@@ -58,7 +56,7 @@ public class MasterActivity extends Activity {
 		query.findInBackground(new FindCallback<ParseObject>() {
 			public void done(List<ParseObject> devices, ParseException e) {
 				if (e == null) {
-					
+
 					if (devices.size() > 0) {
 						Log.d(LOG_TAG, "Old user");
 						mDevice = (Device) devices.get(0);
@@ -77,7 +75,8 @@ public class MasterActivity extends Activity {
 								if (e == null) {
 									Log.d(LOG_TAG, "New user");
 									Utility.registerParseInstallation(newDevice);
-									// receiveMediaFromServer(newDevice, songObjectId);
+									// receiveMediaFromServer(newDevice,
+									// songObjectId);
 									// Utility.uploadFileToServer(MasterActivity.this,
 									// newDevice);
 									mDevice = newDevice;

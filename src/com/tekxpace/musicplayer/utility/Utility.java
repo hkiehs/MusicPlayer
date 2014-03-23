@@ -1,7 +1,9 @@
 package com.tekxpace.musicplayer.utility;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -10,6 +12,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -136,4 +139,64 @@ public class Utility {
 			e.printStackTrace();
 		}
 	}
+
+	public static MediaPlayer prepareMediaPlayer(Context context, MediaPlayer mediaPlayer, byte[] mp3SoundByteArray) {
+		File tempMp3 = null;
+		FileInputStream fis = null;
+		try {
+			// create temp file that will hold byte array
+			tempMp3 = File.createTempFile("test", "mp3", context.getCacheDir());
+			tempMp3.deleteOnExit();
+
+			FileOutputStream fos = new FileOutputStream(tempMp3);
+			fos.write(mp3SoundByteArray);
+			fos.close();
+
+			fis = new FileInputStream(tempMp3);
+			// Tried reusing instance of media player
+			// but that resulted in system crashes...
+			killMediaPlayer(mediaPlayer);
+			mediaPlayer = new MediaPlayer();
+			// Tried passing path directly, but kept getting
+			// "Prepare failed.: status=0x1"
+			// so using file descriptor instead
+			mediaPlayer.setDataSource(fis.getFD());
+			mediaPlayer.prepare();
+			return mediaPlayer;
+		} catch (IOException e) {
+			Log.d(LOG_TAG, e.getMessage());
+			return null;
+		} finally {
+			if (tempMp3 != null) {
+				tempMp3.delete();
+				Log.d(LOG_TAG, "File deleted");
+			}
+
+			if (fis != null) {
+				try {
+					fis.close();
+					Log.d(LOG_TAG, "InputStream closed");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public static void playMedia(MediaPlayer mediaPlayer) {
+		Log.d(LOG_TAG, "Playing media");
+		if (mediaPlayer != null)
+			mediaPlayer.start();
+	}
+
+	private static void killMediaPlayer(MediaPlayer mediaPlayer) {
+		if (mediaPlayer != null) {
+			try {
+				mediaPlayer.release();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 }

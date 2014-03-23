@@ -3,6 +3,7 @@ package com.tekxpace.musicplayer;
 import java.util.List;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -24,7 +25,10 @@ public class SlaveActivity extends Activity {
 
 	private Device newDevice = null;
 	private Device mDevice = null;
+	
 	public static TextView tvDevice, tvConnectionStatus;
+	
+	public static MediaPlayer mediaPlayer = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
