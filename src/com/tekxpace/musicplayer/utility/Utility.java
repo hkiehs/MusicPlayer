@@ -53,12 +53,12 @@ public class Utility {
 		PushService.subscribe(context, objectId, HomeActivity.class);
 	}
 
-	public static void sendPushNotification(String json, Device destination) {
+	public static void sendPushNotification(String json, String deviceId) {
 		try {
 			JSONObject data = new JSONObject(json);
 			// Create our Installation query
 			ParseQuery<ParseInstallation> pushQuery = ParseInstallation.getQuery();
-			pushQuery.whereEqualTo(USER_DEVICE, destination);
+			pushQuery.whereEqualTo(Device.DEVICE_ID, deviceId);
 
 			// Send push notification to query
 			ParsePush push = new ParsePush();
@@ -68,6 +68,13 @@ public class Utility {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void registerParseInstallation(Device device) {
+		ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+		installation.put(Utility.USER_DEVICE, device);
+		installation.put(Device.DEVICE_ID, device.getDeviceId());
+		installation.saveInBackground();
 	}
 
 	public static void uploadFileToServer(Context context, Device device) {

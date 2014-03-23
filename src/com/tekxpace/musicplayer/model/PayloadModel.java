@@ -6,7 +6,7 @@ public class PayloadModel {
 
 	public String status;
 	public String songObjectId;
-	public String deviceId;
+	public String senderDeviceId;
 	public String action;
 
 	public static PayloadModel fromJson(String json) {

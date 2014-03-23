@@ -5,8 +5,8 @@ import com.google.gson.Gson;
 public class ConnectionModel {
 
 	public String status;
-	public String deviceName;
-	public String deviceId;
+	public String senderDeviceName;
+	public String senderDeviceId;
 	public String action;
 
 	public static ConnectionModel fromJson(String json) {

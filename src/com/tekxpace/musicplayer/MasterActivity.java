@@ -17,7 +17,6 @@ import com.parse.GetDataCallback;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
@@ -30,7 +29,7 @@ public class MasterActivity extends Activity {
 
 	private MediaPlayer mediaPlayer = null;
 	private Device newDevice = null;
-	private Device mDevice = null;
+	public static Device mDevice = null;
 
 	public static TextView tvDevice, tvConnectionStatus;
 
@@ -50,11 +49,7 @@ public class MasterActivity extends Activity {
 
 	}
 
-	private void registerParseInstallation(Device device) {
-		ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-		installation.put(Utility.USER_DEVICE, device);
-		installation.saveInBackground();
-	}
+	
 
 	private void registerDevice(final String mDeviceName) {
 		final String deviceId = Utility.getUniqueDeviceId(this);
@@ -67,8 +62,8 @@ public class MasterActivity extends Activity {
 					if (devices.size() > 0) {
 						Log.d(LOG_TAG, "Old user");
 						mDevice = (Device) devices.get(0);
-						registerParseInstallation(mDevice);
-						receiveMediaFromServer(mDevice, songObjectId);
+						Utility.registerParseInstallation(mDevice);
+						// receiveMediaFromServer(mDevice, songObjectId);
 						// Utility.uploadFileToServer(MasterActivity.this,
 						// mDevice);
 					} else {
@@ -81,8 +76,8 @@ public class MasterActivity extends Activity {
 							public void done(ParseException e) {
 								if (e == null) {
 									Log.d(LOG_TAG, "New user");
-									registerParseInstallation(newDevice);
-									receiveMediaFromServer(newDevice, songObjectId);
+									Utility.registerParseInstallation(newDevice);
+									// receiveMediaFromServer(newDevice, songObjectId);
 									// Utility.uploadFileToServer(MasterActivity.this,
 									// newDevice);
 									mDevice = newDevice;

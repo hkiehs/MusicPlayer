@@ -11,7 +11,6 @@ import android.widget.Toast;
 import com.parse.FindCallback;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
-import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
@@ -42,12 +41,6 @@ public class SlaveActivity extends Activity {
 		registerDevice("Device B");
 	}
 
-	private void registerParseInstallation(Device device) {
-		ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-		installation.put(Utility.USER_DEVICE, device);
-		installation.saveInBackground();
-	}
-
 	private void registerDevice(final String mDeviceName) {
 		final String deviceId = Utility.getUniqueDeviceId(this);
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Device");
@@ -59,7 +52,7 @@ public class SlaveActivity extends Activity {
 					if (devices.size() > 0) {
 						Log.d(LOG_TAG, "Old user");
 						mDevice = (Device) devices.get(0);
-						registerParseInstallation(mDevice);
+						Utility.registerParseInstallation(mDevice);
 
 						// join the master group -- only for slave device
 						joinGroup("Device A", mDevice);
@@ -73,7 +66,7 @@ public class SlaveActivity extends Activity {
 							public void done(ParseException e) {
 								if (e == null) {
 									Log.d(LOG_TAG, "New user");
-									registerParseInstallation(newDevice);
+									Utility.registerParseInstallation(newDevice);
 									joinGroup("Device A", newDevice);
 									mDevice = newDevice;
 									newDevice = null;
@@ -110,12 +103,12 @@ public class SlaveActivity extends Activity {
 									Log.i(LOG_TAG, "group joined... sending push notification");
 
 									ConnectionModel connectionModel = new ConnectionModel();
-									connectionModel.deviceName = slaveDevice.getDeviceName();
-									connectionModel.deviceId = slaveDevice.getDeviceId();
+									connectionModel.senderDeviceName = slaveDevice.getDeviceName();
+									connectionModel.senderDeviceId = slaveDevice.getDeviceId();
 									connectionModel.status = "Connected";
 									connectionModel.action = Utility.ACTION_UPDATE_STATUS;
 
-									Utility.sendPushNotification(connectionModel.toJson(), masterDevice);
+									Utility.sendPushNotification(connectionModel.toJson(), masterDevice.getDeviceId());
 								} else {
 									e.printStackTrace();
 								}

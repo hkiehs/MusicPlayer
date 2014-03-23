@@ -1,5 +1,7 @@
 package com.tekxpace.musicplayer;
 
+import java.util.Iterator;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,7 +13,6 @@ import android.widget.Toast;
 
 import com.tekxpace.musicplayer.model.ConnectionModel;
 import com.tekxpace.musicplayer.model.PayloadModel;
-import com.tekxpace.musicplayer.parse.Device;
 import com.tekxpace.musicplayer.utility.Utility;
 
 public class CustomPushReceiver extends BroadcastReceiver {
@@ -29,37 +30,33 @@ public class CustomPushReceiver extends BroadcastReceiver {
 			// Log.d(LOG_TAG, "got action " + action + " on channel " + channel
 			// + " with:");
 
-			// StringBuilder builder = new StringBuilder();
-			//
-			// Iterator itr = json.keys();
-			// while (itr.hasNext()) {
-			// String key = (String) itr.next();
-			// Log.d(LOG_TAG, "..." + key + " => " + json.getString(key));
-			// builder.append(json.getString(key) + " ");
-			// }
+			StringBuilder builder = new StringBuilder();
+
+			Iterator itr = jsonObject.keys();
+			while (itr.hasNext()) {
+				String key = (String) itr.next();
+				Log.d(LOG_TAG, "..." + key + " => " + jsonObject.getString(key));
+				builder.append(jsonObject.getString(key) + " ");
+			}
 
 			if (action.equalsIgnoreCase(Utility.ACTION_UPDATE_STATUS)) {
 
 				ConnectionModel connectionModel = ConnectionModel.fromJson(jsonObject.toString());
 
 				if (MasterActivity.tvConnectionStatus != null) {
-					MasterActivity.tvConnectionStatus.setText(connectionModel.deviceName + " " + connectionModel.status);
+					MasterActivity.tvConnectionStatus.setText(connectionModel.senderDeviceName + " " + connectionModel.status);
 
 					// send payload info using push to slave with objectId
 
 					PayloadModel payloadModel = new PayloadModel();
 					payloadModel.action = Utility.ACTION_PAYLOAD_INFO;
-					payloadModel.deviceId = connectionModel.deviceId;
+					payloadModel.senderDeviceId = MasterActivity.mDevice.getDeviceId();
 					payloadModel.status = "Song info received";
 					payloadModel.songObjectId = MasterActivity.songObjectId;
 
 					String payloadJson = payloadModel.toJson();
 
-					Device destination = new Device();
-					destination.setDeviceId(connectionModel.deviceId);
-					destination.setDeviceName(connectionModel.deviceName);
-
-					Utility.sendPushNotification(payloadJson, destination);
+					Utility.sendPushNotification(payloadJson, connectionModel.senderDeviceId);
 				}
 			} else if (action.equalsIgnoreCase(Utility.ACTION_PAYLOAD_INFO)) {
 

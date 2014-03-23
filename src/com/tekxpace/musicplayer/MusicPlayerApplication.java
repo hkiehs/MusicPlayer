@@ -5,6 +5,7 @@ import android.app.Application;
 import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseObject;
+import com.parse.PushService;
 import com.tekxpace.musicplayer.parse.Device;
 import com.tekxpace.musicplayer.parse.Group;
 import com.tekxpace.musicplayer.parse.Media;
@@ -21,6 +22,7 @@ public class MusicPlayerApplication extends Application {
 
 		Parse.initialize(this, "nrXYlTqKzxmp0mSynnblthvX5HcwdNykXTNoekWs", "lNCLSapoIIUCVylghKSR0lT4Gvb78FEo7kjHToSd");
 		Parse.setLogLevel(Parse.LOG_LEVEL_VERBOSE);
+		PushService.startServiceIfRequired(getBaseContext());
 		// ParseUser.enableAutomaticUser();
 
 		/*
