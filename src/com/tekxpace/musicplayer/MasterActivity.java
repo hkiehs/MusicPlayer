@@ -2,7 +2,6 @@ package com.tekxpace.musicplayer;
 
 import java.util.List;
 
-import android.app.Activity;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.android.nsdchat.NsdChatActivity;
 import com.parse.FindCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseAnalytics;
@@ -22,18 +22,17 @@ import com.tekxpace.musicplayer.model.ConnectionModel;
 import com.tekxpace.musicplayer.parse.Device;
 import com.tekxpace.musicplayer.utility.Utility;
 
-public class MasterActivity extends Activity {
+public class MasterActivity extends NsdChatActivity {
 	private static final String LOG_TAG = "MasterActivity";
 	public static final String songObjectId = "3UljCjhopM";
 
-	public static String slaveDeviceId;
-
+	public static String slaveDeviceId = null;
 	private MediaPlayer mediaPlayer = null;
-
-	private Device newDevice = null;
 	public static Device mDevice = null;
+	private Device newDevice = null;
 
-	public static TextView tvDevice, tvConnectionStatus;
+	public static TextView tvConnectionStatus;
+	public static TextView tvDevice;
 	public static Button btPlayPause;
 
 	boolean mDeviceReady = false;

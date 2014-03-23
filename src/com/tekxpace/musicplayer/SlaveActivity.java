@@ -2,13 +2,13 @@ package com.tekxpace.musicplayer;
 
 import java.util.List;
 
-import android.app.Activity;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.nsdchat.NsdChatActivity;
 import com.parse.FindCallback;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
@@ -20,7 +20,7 @@ import com.tekxpace.musicplayer.parse.Device;
 import com.tekxpace.musicplayer.parse.Group;
 import com.tekxpace.musicplayer.utility.Utility;
 
-public class SlaveActivity extends Activity {
+public class SlaveActivity extends NsdChatActivity {
 	private static final String LOG_TAG = "SlaveActivity";
 
 	public static TextView tvDevice;
