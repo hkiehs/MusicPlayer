@@ -1,5 +1,6 @@
 package com.tekxpace.musicplayer;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONException;
@@ -26,6 +27,7 @@ public class CustomPushReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		Log.d(LOG_TAG,  "End Time : " + System.currentTimeMillis());
 		final Context mContext = context;
 		Log.d(LOG_TAG, "Notification received : CustomPushReceiver");
 		try {
@@ -36,13 +38,13 @@ public class CustomPushReceiver extends BroadcastReceiver {
 			// Log.d(LOG_TAG, "got action " + action + " on channel " + channel
 			// + " with:");
 
-			// StringBuilder builder = new StringBuilder();
-			// Iterator itr = jsonObject.keys();
-			// while (itr.hasNext()) {
-			// String key = (String) itr.next();
-			// Log.d(LOG_TAG, "..." + key + " => " + jsonObject.getString(key));
-			// builder.append(jsonObject.getString(key) + " ");
-			// }
+			StringBuilder builder = new StringBuilder();
+			Iterator itr = jsonObject.keys();
+			while (itr.hasNext()) {
+				String key = (String) itr.next();
+				Log.d(LOG_TAG, "..." + key + " => " + jsonObject.getString(key));
+				builder.append(jsonObject.getString(key) + " ");
+			}
 
 			if (action.equalsIgnoreCase(Utility.ACTION_UPDATE_STATUS)) {
 				ConnectionModel connectionModel = ConnectionModel.fromJson(jsonObject.toString());
@@ -70,10 +72,13 @@ public class CustomPushReceiver extends BroadcastReceiver {
 				} else if (connectionModel.status.equalsIgnoreCase(Utility.STATUS_PLAY)) {
 					// ask devices to play
 					Utility.playMedia(SlaveActivity.mediaPlayer, connectionModel.playBackPosition);
+					// connectionUpdate(connectionModel);
 
 				} else if (connectionModel.status.equalsIgnoreCase(Utility.STATUS_PAUSE)) {
 					// ask devices to pause
 					Utility.pauseMedia(SlaveActivity.mediaPlayer, connectionModel.playBackPosition);
+					// connectionUpdate(connectionModel);
+
 				}
 			} else if (action.equalsIgnoreCase(Utility.ACTION_PAYLOAD_INFO)) {
 				PayloadModel payloadModel = PayloadModel.fromJson(jsonObject.toString());
@@ -88,6 +93,14 @@ public class CustomPushReceiver extends BroadcastReceiver {
 		} catch (JSONException e) {
 			Log.d(LOG_TAG, "JSONException: " + e.getMessage());
 		}
+	}
+
+	private void connectionUpdate(ConnectionModel connectionModel) {
+		ConnectionModel payloadModel = new ConnectionModel();
+		payloadModel.senderDeviceId = SlaveActivity.mDevice.getDeviceId();
+		payloadModel.action = Utility.ACTION_UPDATE_STATUS;
+		payloadModel.status = "Measure Round Trip Time [ " + System.currentTimeMillis() + "]";
+		Utility.sendPushNotification(payloadModel.toJson(), connectionModel.senderDeviceId);
 	}
 
 	private void receiveMediaFromServer(final Context context, String objectId, final String senderDeviceId) {

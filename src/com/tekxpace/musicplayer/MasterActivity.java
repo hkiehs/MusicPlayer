@@ -56,6 +56,7 @@ public class MasterActivity extends Activity {
 		btPlayPause.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				Log.d(LOG_TAG,  "Start Time : " + System.currentTimeMillis());
 				if (mDeviceReady) {
 					String state = btPlayPause.getText().toString();
 					int currentPlayBackPosition = mediaPlayer.getCurrentPosition();
