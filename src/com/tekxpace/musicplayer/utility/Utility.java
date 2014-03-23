@@ -28,6 +28,7 @@ import com.tekxpace.musicplayer.parse.Media;
 public class Utility {
 	private final static String LOG_TAG = "Utility";
 	public final static String USER_DEVICE = "userDevice";
+	public final static String OBJECT_ID = "objectId";
 
 	public static String getUniqueDeviceId(Context context) {
 		final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);

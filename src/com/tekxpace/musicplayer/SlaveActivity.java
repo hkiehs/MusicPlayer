@@ -44,14 +44,14 @@ public class SlaveActivity extends Activity {
 
 	private void registerParseInstallation(Device device) {
 		ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-		installation.put("device", device);
+		installation.put(Utility.USER_DEVICE, device);
 		installation.saveInBackground();
 	}
 
 	private void registerDevice(final String mDeviceName) {
 		final String deviceId = Utility.getUniqueDeviceId(this);
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Device");
-		query.whereEqualTo("deviceId", deviceId);
+		query.whereEqualTo(Device.DEVICE_ID, deviceId);
 		query.findInBackground(new FindCallback<ParseObject>() {
 			public void done(List<ParseObject> devices, ParseException e) {
 				if (e == null) {

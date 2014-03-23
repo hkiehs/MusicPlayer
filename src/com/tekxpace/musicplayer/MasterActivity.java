@@ -46,7 +46,7 @@ public class MasterActivity extends Activity {
 
 		// Master Device
 		registerDevice("Device A");
-		// receiveMediaFromServer();
+
 	}
 
 	private void registerParseInstallation(Device device) {
@@ -58,7 +58,7 @@ public class MasterActivity extends Activity {
 	private void registerDevice(final String mDeviceName) {
 		final String deviceId = Utility.getUniqueDeviceId(this);
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Device");
-		query.whereEqualTo("deviceId", deviceId);
+		query.whereEqualTo(Device.DEVICE_ID, deviceId);
 		query.findInBackground(new FindCallback<ParseObject>() {
 			public void done(List<ParseObject> devices, ParseException e) {
 				if (e == null) {
@@ -67,7 +67,9 @@ public class MasterActivity extends Activity {
 						Log.d(LOG_TAG, "Old user");
 						mDevice = (Device) devices.get(0);
 						registerParseInstallation(mDevice);
-						Utility.uploadFileToServer(MasterActivity.this, mDevice);
+						receiveMediaFromServer(mDevice, "3UljCjhopM");
+						// Utility.uploadFileToServer(MasterActivity.this,
+						// mDevice);
 					} else {
 						// register new user
 						newDevice = new Device();
@@ -79,7 +81,9 @@ public class MasterActivity extends Activity {
 								if (e == null) {
 									Log.d(LOG_TAG, "New user");
 									registerParseInstallation(newDevice);
-									Utility.uploadFileToServer(MasterActivity.this, newDevice);
+									receiveMediaFromServer(newDevice, "3UljCjhopM");
+									// Utility.uploadFileToServer(MasterActivity.this,
+									// newDevice);
 									mDevice = newDevice;
 									newDevice = null;
 								} else {
@@ -96,10 +100,11 @@ public class MasterActivity extends Activity {
 		});
 	}
 
-	private void receiveMediaFromServer() {
+	private void receiveMediaFromServer(Device device, String objectId) {
 		// request to receive file from server
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Media");
-		query.whereEqualTo("username", "Sheikh Muneeb");
+		query.whereEqualTo(Utility.USER_DEVICE, device);
+		query.whereEqualTo(Utility.OBJECT_ID, objectId);
 		query.findInBackground(new FindCallback<ParseObject>() {
 			public void done(List<ParseObject> users, ParseException e) {
 				if (e == null) {
