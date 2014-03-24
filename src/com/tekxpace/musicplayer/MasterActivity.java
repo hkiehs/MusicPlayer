@@ -5,10 +5,12 @@ import java.util.List;
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.GetDataCallback;
@@ -38,6 +40,28 @@ public class MasterActivity extends Activity {
 
 	boolean mDeviceReady = false;
 
+	// runs without a timer by reposting this handler at the end of the runnable
+	Handler timerHandler = new Handler();
+	Runnable playRunnable = new Runnable() {
+		@Override
+		public void run() {
+			String state = btPlayPause.getText().toString();
+			int currentPlayBackPosition = mediaPlayer.getCurrentPosition();
+
+			if (state.equalsIgnoreCase(Utility.STATUS_PLAY)) {
+				btPlayPause.setText("Pause");
+				// send play push
+				playPause(true, currentPlayBackPosition);
+			} else {
+				btPlayPause.setText("Play");
+				// send pause push
+				playPause(false, currentPlayBackPosition);
+			}
+			
+			btPlayPause.setEnabled(true);
+		}
+	};
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,22 +80,26 @@ public class MasterActivity extends Activity {
 		btPlayPause.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Log.d(LOG_TAG,  "Start Time : " + System.currentTimeMillis());
+				Log.d(LOG_TAG, "Start Time : " + System.currentTimeMillis());
 				if (mDeviceReady) {
-					String state = btPlayPause.getText().toString();
-					int currentPlayBackPosition = mediaPlayer.getCurrentPosition();
-
-					if (state.equalsIgnoreCase(Utility.STATUS_PLAY)) {
-						btPlayPause.setText("Pause");
-						// send play push
-						playPause(true, currentPlayBackPosition);
-					} else {
-						btPlayPause.setText("Play");
-						// send pause push
-						playPause(false, currentPlayBackPosition);
-					}
+					timerHandler.postDelayed(playRunnable, 4000);
+					btPlayPause.setEnabled(false);
+					
+//					String state = btPlayPause.getText().toString();
+//					int currentPlayBackPosition = mediaPlayer.getCurrentPosition();
+//
+//					if (state.equalsIgnoreCase(Utility.STATUS_PLAY)) {
+//						btPlayPause.setText("Pause");
+//						// send play push
+//						playPause(true, currentPlayBackPosition);
+//					} else {
+//						btPlayPause.setText("Play");
+//						// send pause push
+//						playPause(false, currentPlayBackPosition);
+//					}
 				} else {
 					Log.d(LOG_TAG, "Master device not ready");
+					Toast.makeText(MasterActivity.this, "Master device not ready.", Toast.LENGTH_SHORT).show();
 				}
 
 			}
