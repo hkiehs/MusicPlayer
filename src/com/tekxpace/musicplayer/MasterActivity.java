@@ -45,22 +45,20 @@ public class MasterActivity extends Activity {
 	Runnable playRunnable = new Runnable() {
 		@Override
 		public void run() {
-			String state = btPlayPause.getText().toString();
-			int currentPlayBackPosition = mediaPlayer.getCurrentPosition();
-
-			if (state.equalsIgnoreCase(Utility.STATUS_PLAY)) {
-				btPlayPause.setText("Pause");
-				// send play push
-				playPause(true, currentPlayBackPosition);
-			} else {
-				btPlayPause.setText("Play");
-				// send pause push
-				playPause(false, currentPlayBackPosition);
-			}
-			
+			Utility.playMedia(mediaPlayer, currentPlayBackPosition);
 			btPlayPause.setEnabled(true);
 		}
 	};
+
+	Runnable pauseRunnable = new Runnable() {
+		@Override
+		public void run() {
+			Utility.pauseMedia(mediaPlayer, currentPlayBackPosition);
+			btPlayPause.setEnabled(true);
+		}
+	};
+
+	int currentPlayBackPosition = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -82,21 +80,20 @@ public class MasterActivity extends Activity {
 			public void onClick(View view) {
 				Log.d(LOG_TAG, "Start Time : " + System.currentTimeMillis());
 				if (mDeviceReady) {
-					timerHandler.postDelayed(playRunnable, 4000);
 					btPlayPause.setEnabled(false);
-					
-//					String state = btPlayPause.getText().toString();
-//					int currentPlayBackPosition = mediaPlayer.getCurrentPosition();
-//
-//					if (state.equalsIgnoreCase(Utility.STATUS_PLAY)) {
-//						btPlayPause.setText("Pause");
-//						// send play push
-//						playPause(true, currentPlayBackPosition);
-//					} else {
-//						btPlayPause.setText("Play");
-//						// send pause push
-//						playPause(false, currentPlayBackPosition);
-//					}
+
+					String state = btPlayPause.getText().toString();
+					currentPlayBackPosition = mediaPlayer.getCurrentPosition();
+
+					if (state.equalsIgnoreCase(Utility.STATUS_PLAY)) {
+						btPlayPause.setText("Pause");
+						// send play push
+						playPause(true, currentPlayBackPosition);
+					} else {
+						btPlayPause.setText("Play");
+						// send pause push
+						playPause(false, currentPlayBackPosition);
+					}
 				} else {
 					Log.d(LOG_TAG, "Master device not ready");
 					Toast.makeText(MasterActivity.this, "Master device not ready.", Toast.LENGTH_SHORT).show();
@@ -110,10 +107,8 @@ public class MasterActivity extends Activity {
 		// send notification to play the song to slave
 		ConnectionModel play = new ConnectionModel();
 		if (isPlay) {
-			Utility.playMedia(mediaPlayer, currentPosition);
 			play.status = Utility.STATUS_PLAY;
 		} else {
-			Utility.pauseMedia(mediaPlayer, currentPosition);
 			play.status = Utility.STATUS_PAUSE;
 		}
 
@@ -124,6 +119,13 @@ public class MasterActivity extends Activity {
 
 		// notifying slave to play
 		Utility.sendPushNotification(play.toJson(), slaveDeviceId);
+
+		if (isPlay) {
+			timerHandler.postDelayed(playRunnable, 2259);
+		} else {
+			timerHandler.postDelayed(pauseRunnable, 2259);
+		}
+
 	}
 
 	private void registerDevice(final String mDeviceName) {
