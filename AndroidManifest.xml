@@ -48,12 +48,31 @@
             android:name="com.tekxpace.musicplayer.HomeActivity"
             android:label="@string/app_name" >
             <intent-filter>
+               <!--  <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" /> -->
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".chat.TabWidget"
+            android:label="@string/app_name" >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".chat.HostActivity"
+            android:label="AllJoyn Chat Channel Hosting"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
+        <activity
+            android:name=".chat.UseActivity"
+            android:label="AllJoyn Chat Channel Usage"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
 
+        <service android:name=".chat.AllJoynService" />
         <service android:name="com.parse.PushService" />
 
         <receiver android:name="com.parse.ParseBroadcastReceiver" >
@@ -85,24 +104,6 @@
                 <category android:name="com.tekxpace.musicplayer" />
             </intent-filter>
         </receiver>
-
-        <activity
-            android:name=".TabWidget"
-            android:label="@string/app_name" >
-        </activity>
-        <activity
-            android:name=".HostActivity"
-            android:label="AllJoyn Chat Channel Hosting"
-            android:windowSoftInputMode="adjustResize" >
-        </activity>
-        <activity
-            android:name=".UseActivity"
-            android:label="AllJoyn Chat Channel Usage"
-            android:windowSoftInputMode="adjustResize" >
-        </activity>
-
-        <service android:name="AllJoynService" >
-        </service>
     </application>
 
 </manifest>
