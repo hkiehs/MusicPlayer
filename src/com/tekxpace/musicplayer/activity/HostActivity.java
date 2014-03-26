@@ -14,13 +14,15 @@
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.tekxpace.musicplayer.chat;
+package com.tekxpace.musicplayer.activity;
 
 import com.tekxpace.musicplayer.MusicPlayerApplication;
 import com.tekxpace.musicplayer.R;
+import com.tekxpace.musicplayer.chat.AllJoynService;
 import com.tekxpace.musicplayer.chat.DialogBuilder;
-import com.tekxpace.musicplayer.chat.Observable;
-import com.tekxpace.musicplayer.chat.Observer;
+import com.tekxpace.musicplayer.chat.AllJoynService.HostChannelState;
+import com.tekxpace.musicplayer.utility.Observable;
+import com.tekxpace.musicplayer.utility.Observer;
 
 import android.os.Bundle;
 import android.os.Handler;

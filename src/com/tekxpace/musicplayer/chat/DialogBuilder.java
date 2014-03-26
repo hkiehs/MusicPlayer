@@ -33,6 +33,7 @@ import java.util.List;
 
 import com.tekxpace.musicplayer.MusicPlayerApplication;
 import com.tekxpace.musicplayer.R;
+import com.tekxpace.musicplayer.activity.UseActivity;
 
 public class DialogBuilder {
     private static final String TAG = "chat.Dialogs";

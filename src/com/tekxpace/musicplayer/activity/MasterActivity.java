@@ -1,4 +1,4 @@
-package com.tekxpace.musicplayer;
+package com.tekxpace.musicplayer.activity;
 
 import java.util.List;
 
@@ -20,6 +20,9 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
+import com.tekxpace.musicplayer.R;
+import com.tekxpace.musicplayer.R.id;
+import com.tekxpace.musicplayer.R.layout;
 import com.tekxpace.musicplayer.model.ConnectionModel;
 import com.tekxpace.musicplayer.parse.Device;
 import com.tekxpace.musicplayer.utility.Utility;

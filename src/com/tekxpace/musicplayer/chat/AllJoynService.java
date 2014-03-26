@@ -30,10 +30,10 @@ import org.alljoyn.bus.annotation.BusSignalHandler;
 
 import com.tekxpace.musicplayer.MusicPlayerApplication;
 import com.tekxpace.musicplayer.R;
-import com.tekxpace.musicplayer.chat.ChatInterface;
-import com.tekxpace.musicplayer.chat.Observable;
-import com.tekxpace.musicplayer.chat.Observer;
-import com.tekxpace.musicplayer.chat.TabWidget;
+import com.tekxpace.musicplayer.TabWidget;
+import com.tekxpace.musicplayer.utility.ChatInterface;
+import com.tekxpace.musicplayer.utility.Observable;
+import com.tekxpace.musicplayer.utility.Observer;
 
 import android.os.Handler;
 import android.os.HandlerThread;

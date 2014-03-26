@@ -13,10 +13,11 @@
  *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-package com.tekxpace.musicplayer.chat;
+package com.tekxpace.musicplayer.utility;
 
-import com.tekxpace.musicplayer.chat.Observable;
+import com.tekxpace.musicplayer.utility.Observer;
 
-public interface Observer {
-	public void update(Observable o, Object arg);
+public interface Observable {
+	public void addObserver(Observer obs);
+	public void deleteObserver(Observer obs);
 }

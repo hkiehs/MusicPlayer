@@ -14,9 +14,11 @@
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.tekxpace.musicplayer.chat;
+package com.tekxpace.musicplayer;
 
 import com.tekxpace.musicplayer.R;
+import com.tekxpace.musicplayer.activity.HostActivity;
+import com.tekxpace.musicplayer.activity.UseActivity;
 
 import android.os.Bundle;
 import android.app.TabActivity;

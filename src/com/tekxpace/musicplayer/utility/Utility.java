@@ -24,7 +24,7 @@ import com.parse.ParseQuery;
 import com.parse.ProgressCallback;
 import com.parse.PushService;
 import com.parse.SaveCallback;
-import com.tekxpace.musicplayer.HomeActivity;
+import com.tekxpace.musicplayer.activity.HomeActivity;
 import com.tekxpace.musicplayer.parse.Device;
 import com.tekxpace.musicplayer.parse.Media;
 

@@ -1,4 +1,4 @@
-package com.tekxpace.musicplayer;
+package com.tekxpace.musicplayer.activity;
 
 import android.os.Bundle;
 

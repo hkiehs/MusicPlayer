@@ -18,6 +18,8 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.tekxpace.musicplayer.activity.MasterActivity;
+import com.tekxpace.musicplayer.activity.SlaveActivity;
 import com.tekxpace.musicplayer.model.ConnectionModel;
 import com.tekxpace.musicplayer.model.PayloadModel;
 import com.tekxpace.musicplayer.utility.Utility;
@@ -27,7 +29,7 @@ public class CustomPushReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d(LOG_TAG,  "End Time : " + System.currentTimeMillis());
+		Log.d(LOG_TAG, "End Time : " + System.currentTimeMillis());
 		final Context mContext = context;
 		Log.d(LOG_TAG, "Notification received : CustomPushReceiver");
 		try {
