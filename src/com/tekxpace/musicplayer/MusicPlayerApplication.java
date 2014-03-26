@@ -16,31 +16,29 @@
 
 package com.tekxpace.musicplayer;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import android.app.Application;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.media.MediaPlayer;
+import android.util.Log;
+
 import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseObject;
 import com.parse.PushService;
 import com.tekxpace.musicplayer.chat.AllJoynService;
-import com.tekxpace.musicplayer.chat.AllJoynService.BusAttachmentState;
-import com.tekxpace.musicplayer.chat.AllJoynService.HostChannelState;
-import com.tekxpace.musicplayer.chat.AllJoynService.UseChannelState;
 import com.tekxpace.musicplayer.parse.Device;
 import com.tekxpace.musicplayer.parse.Group;
 import com.tekxpace.musicplayer.parse.Media;
 import com.tekxpace.musicplayer.utility.Observable;
 import com.tekxpace.musicplayer.utility.Observer;
-
-import android.app.Application;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.util.Log;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 /**
  * The ChatAppliation class serves as the Model (in the sense of the common user
@@ -676,4 +674,11 @@ public class MusicPlayerApplication extends Application implements Observable {
 	 * us as observers in order to get notifications of interesting events.
 	 */
 	private List<Observer> mObservers = new ArrayList<Observer>();
+
+	/**
+	 * Parse implementation
+	 */
+	public Device mDevice = null;
+	public MediaPlayer mMediaPlayer = null;
+	
 }

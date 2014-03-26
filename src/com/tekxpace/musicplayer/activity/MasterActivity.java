@@ -21,10 +21,9 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 import com.tekxpace.musicplayer.R;
-import com.tekxpace.musicplayer.R.id;
-import com.tekxpace.musicplayer.R.layout;
 import com.tekxpace.musicplayer.model.ConnectionModel;
 import com.tekxpace.musicplayer.parse.Device;
+import com.tekxpace.musicplayer.parse.Media;
 import com.tekxpace.musicplayer.utility.Utility;
 
 public class MasterActivity extends Activity {
@@ -133,7 +132,7 @@ public class MasterActivity extends Activity {
 
 	private void registerDevice(final String mDeviceName) {
 		final String deviceId = Utility.getUniqueDeviceId(this);
-		ParseQuery<ParseObject> query = ParseQuery.getQuery("Device");
+		ParseQuery<ParseObject> query = ParseQuery.getQuery(Device.TABLE);
 		query.whereEqualTo(Device.DEVICE_ID, deviceId);
 		query.findInBackground(new FindCallback<ParseObject>() {
 			public void done(List<ParseObject> devices, ParseException e) {
@@ -184,7 +183,7 @@ public class MasterActivity extends Activity {
 			public void done(List<ParseObject> users, ParseException e) {
 				if (e == null) {
 					Log.d(LOG_TAG, "Retrieved " + users.size() + " files");
-					ParseFile mediaFile = (ParseFile) users.get(0).get("mediaFile");
+					ParseFile mediaFile = (ParseFile) users.get(0).get(Media.MEDIA_FILE);
 					mediaFile.getDataInBackground(new GetDataCallback() {
 						public void done(byte[] data, ParseException e) {
 							if (e == null) {

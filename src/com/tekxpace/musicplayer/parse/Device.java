@@ -11,12 +11,13 @@ import com.parse.ParseObject;
 
 @ParseClassName("Device")
 public class Device extends ParseObject {
+	public static final String TABLE = "Device";
 	public static final String DEVICE_ID = "deviceId";
 
 	public Device() {
 		// A default constructor is required.
 	}
-
+	
 	public String getDeviceName() {
 		return getString("deviceName");
 	}

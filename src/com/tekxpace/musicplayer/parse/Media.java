@@ -7,10 +7,11 @@ import com.tekxpace.musicplayer.utility.Utility;
 
 @ParseClassName("Media")
 public class Media extends ParseObject {
-	public static String SONG_NAME = "songName";
-	public static String ARTIST_NAME = "artistName";
-	public static String ALBUM_NAME = "albumName";
-	public static String MEDIA_FILE = "mediaFile";
+	public static final String TABLE = "Media";
+	public static final String SONG_NAME = "songName";
+	public static final String ARTIST_NAME = "artistName";
+	public static final String ALBUM_NAME = "albumName";
+	public static final String MEDIA_FILE = "mediaFile";
 
 	public Media() {
 		// A default constructor is required.
