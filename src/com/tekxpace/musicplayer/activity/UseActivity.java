@@ -41,19 +41,6 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 		ListView hlv = (ListView) findViewById(R.id.useHistoryList);
 		hlv.setAdapter(mHistoryList);
 
-		EditText messageBox = (EditText) findViewById(R.id.useMessage);
-		messageBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-			public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-				if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
-					String message = view.getText().toString();
-					Log.i(TAG, "useMessage.onEditorAction(): got message " + message + ")");
-					mChatApplication.newLocalUserMessage(message);
-					view.setText("");
-				}
-				return true;
-			}
-		});
-
 		mJoinButton = (Button) findViewById(R.id.useJoin);
 		mJoinButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -69,6 +56,11 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 		});
 
 		mActionButton = (Button) findViewById(R.id.btAction);
+
+		if (!Utility.MASTER_BUILD) {
+			mActionButton.setVisibility(View.INVISIBLE);
+		}
+
 		mActionButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -124,6 +116,8 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 		 */
 		updateChannelState();
 		updateHistory();
+
+		mJoinButton.setEnabled(false);
 
 		/*
 		 * Now that we're all ready to go, we are ready to accept notifications
@@ -195,7 +189,7 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 
 	private void updateHistory() {
 		Log.i(TAG, "updateHistory()");
-		mHistoryList.clear();
+		// mHistoryList.clear();
 		List<String> messages = mChatApplication.getHistory();
 		for (String message : messages) {
 			mHistoryList.add(message);
@@ -230,8 +224,7 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 	 * handle the general errors. We also handle our own errors.
 	 */
 	private void alljoynError() {
-		if (mChatApplication.getErrorModule() == MusicPlayerApplication.Module.GENERAL
-				|| mChatApplication.getErrorModule() == MusicPlayerApplication.Module.USE) {
+		if (mChatApplication.getErrorModule() == MusicPlayerApplication.Module.GENERAL || mChatApplication.getErrorModule() == MusicPlayerApplication.Module.USE) {
 			showDialog(DIALOG_ALLJOYN_ERROR_ID);
 		}
 	}
@@ -312,6 +305,7 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 		if (data != null) {
 			addMessageToList("song downloaded successfully");
 			mChatApplication.mMediaPlayer = Utility.prepareMediaPlayer(UseActivity.this, mChatApplication.mMediaPlayer, data);
+			mJoinButton.setEnabled(true);
 		} else {
 			addMessageToList("song download un-successful");
 			// show retry button on UI

@@ -45,21 +45,13 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="Leave Channel" />
-        
+
         <Button
             android:id="@+id/btAction"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="Play" />
     </LinearLayout>
-
-    <EditText
-        android:id="@+id/useMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:enabled="false"
-        android:hint="Enter message here" />
 
     <ListView
         android:id="@+id/useHistoryList"

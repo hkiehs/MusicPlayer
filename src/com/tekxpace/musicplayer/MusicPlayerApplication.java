@@ -39,6 +39,7 @@ import com.tekxpace.musicplayer.parse.Group;
 import com.tekxpace.musicplayer.parse.Media;
 import com.tekxpace.musicplayer.utility.Observable;
 import com.tekxpace.musicplayer.utility.Observer;
+import com.tekxpace.musicplayer.utility.Utility;
 
 /**
  * The ChatAppliation class serves as the Model (in the sense of the common user
@@ -594,7 +595,9 @@ public class MusicPlayerApplication extends Application implements Observable {
 
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 		Date date = new Date();
-		mHistory.add("[" + dateFormat.format(date) + "] (" + nickname + ") " + message);
+		// mHistory.add("[" + dateFormat.format(date) + "] (" + nickname + ") "
+		// + message);
+		mHistory.add(message);
 		notifyObservers(HISTORY_CHANGED_EVENT);
 	}
 
