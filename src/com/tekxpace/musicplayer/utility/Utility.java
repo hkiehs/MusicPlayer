@@ -34,7 +34,7 @@ import com.tekxpace.musicplayer.parse.Media;
 
 public class Utility {
 	private final static String LOG_TAG = "Utility";
-	public static final String songObjectId = "3UljCjhopM";
+	public static final String songObjectId = "SCZaNHKqQd";
 
 	public final static String USER_DEVICE = "userDevice";
 	public final static String OBJECT_ID = "objectId";
