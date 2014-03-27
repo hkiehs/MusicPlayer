@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tekxpace.musicplayer.MusicPlayerApplication;
 import com.tekxpace.musicplayer.R;
@@ -89,15 +88,19 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 					mActionButton.setText("Play");
 				}
 
-				// do the same work to pretend execute the same cmds
-				MediaModel mediaModel = MediaModel.fromJson(mMediaModel.toJson());
-				if (mediaModel != null) {
-					if (mediaModel.action.equalsIgnoreCase(Utility.STATUS_PLAY)) {
-						Utility.playMedia(mChatApplication.mMediaPlayer, mediaModel.playBackPosition);
-					} else if (mediaModel.action.equalsIgnoreCase(Utility.STATUS_PAUSE)) {
-						Utility.pauseMedia(mChatApplication.mMediaPlayer, mediaModel.playBackPosition);
+				final MediaModel mediaModel = mMediaModel;
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						// do the same work to pretend execute the same cmds
+						if (mediaModel.action.equalsIgnoreCase(Utility.STATUS_PLAY)) {
+							Utility.playMedia(mChatApplication.mMediaPlayer, mediaModel.playBackPosition);
+						} else if (mediaModel.action.equalsIgnoreCase(Utility.STATUS_PAUSE)) {
+							Utility.pauseMedia(mChatApplication.mMediaPlayer, mediaModel.playBackPosition);
+						}
 					}
-				}
+				}, 300);
 
 			}
 		});
@@ -267,6 +270,11 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 		}
 	};
 
+	private void addMessageToList(String msg) {
+		mHistoryList.add(msg);
+		mHistoryList.notifyDataSetChanged();
+	}
+
 	private MusicPlayerApplication mChatApplication = null;
 	private ArrayAdapter<String> mHistoryList;
 	private Button mJoinButton;
@@ -278,19 +286,19 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 	@Override
 	public void onRegistrationComplete(Device device) {
 		if (device != null) {
-			Log.d(TAG, "Registration successful");
-			Toast.makeText(UseActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
+			addMessageToList("Registration successful");
 			mChatApplication.mDevice = device;
 			Utility.registerParseInstallation(device);
+			// upload file to server
 
 			// INFO: now user should be able to host and retrieve songs from
 			// server send download instruction on the group and download it
 			// locally
 
 			Utility.receiveMediaFromServer(device, Utility.songObjectId, this);
+			addMessageToList("receiving song... from server");
 		} else {
-			Log.d(TAG, "Registration un-successful");
-			Toast.makeText(UseActivity.this, "Registration un-successful", Toast.LENGTH_SHORT).show();
+			addMessageToList("Registration un-successful");
 			// Registration failed
 			// show a retry button on the UI to retry registration
 			// User can not proceed further without this step only if he has
@@ -301,12 +309,11 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 
 	@Override
 	public void onDownloadSuccess(byte[] data) {
-		// TODO Auto-generated method stub
 		if (data != null) {
-			Toast.makeText(UseActivity.this, "song download successful", Toast.LENGTH_SHORT).show();
+			addMessageToList("song downloaded successfully");
 			mChatApplication.mMediaPlayer = Utility.prepareMediaPlayer(UseActivity.this, mChatApplication.mMediaPlayer, data);
 		} else {
-			Toast.makeText(UseActivity.this, "song download un-successful", Toast.LENGTH_SHORT).show();
+			addMessageToList("song download un-successful");
 			// show retry button on UI
 			// should not allow this guy to play the song as he can not
 			// participate now

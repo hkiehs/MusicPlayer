@@ -29,7 +29,6 @@ import com.parse.ProgressCallback;
 import com.parse.PushService;
 import com.parse.SaveCallback;
 import com.tekxpace.musicplayer.activity.UseActivity;
-import com.tekxpace.musicplayer.model.MediaModel;
 import com.tekxpace.musicplayer.parse.Device;
 import com.tekxpace.musicplayer.parse.Media;
 
@@ -96,7 +95,7 @@ public class Utility {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		byte[] buf = new byte[1024];
 		try {
-			AssetFileDescriptor afd = context.getAssets().openFd("test.mp3");
+			AssetFileDescriptor afd = context.getAssets().openFd("Iridescent.mp3");
 			FileInputStream fis = afd.createInputStream();
 
 			for (int readNum; (readNum = fis.read(buf)) != -1;) {
@@ -109,7 +108,7 @@ public class Utility {
 			byte[] bytes = bos.toByteArray();
 
 			// save file to the server
-			ParseFile file = new ParseFile("test.mp3", bytes);
+			ParseFile file = new ParseFile("Iridescent.mp3", bytes);
 			file.saveInBackground(new SaveCallback() {
 				@Override
 				public void done(ParseException e) {
@@ -121,15 +120,15 @@ public class Utility {
 			}, new ProgressCallback() {
 				public void done(Integer percentDone) {
 					if (percentDone != null) {
-						Log.i(LOG_TAG, "progress [" + percentDone + "]");
+						Log.i(LOG_TAG, "file uploaded progress [" + percentDone + "]");
 					}
 				}
 			});
 
 			Media media = new Media();
-			media.setSongName("Remix");
-			media.setAlbumName("Remix Songs");
-			media.setArtistName("Atif Aslam");
+			media.setSongName("Iridescent");
+			media.setAlbumName("A Thousand Suns");
+			media.setArtistName("Linkin Park");
 			media.setMediaFile(file);
 			media.setDeviceId(device);
 
@@ -197,8 +196,8 @@ public class Utility {
 
 	public static void playMedia(MediaPlayer mediaPlayer, int playBackPosition) {
 		if (mediaPlayer != null) {
-			mediaPlayer.seekTo(playBackPosition);
 			mediaPlayer.start();
+			mediaPlayer.seekTo(playBackPosition);
 		}
 	}
 
@@ -208,7 +207,6 @@ public class Utility {
 			mediaPlayer.seekTo(playBackPosition);
 		}
 	}
-
 
 	public static void killMediaPlayer(MediaPlayer mediaPlayer) {
 		if (mediaPlayer != null) {
