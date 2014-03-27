@@ -16,16 +16,15 @@
 
 package com.tekxpace.musicplayer;
 
-import com.tekxpace.musicplayer.R;
-import com.tekxpace.musicplayer.activity.HostActivity;
-import com.tekxpace.musicplayer.activity.UseActivity;
-
-import android.os.Bundle;
 import android.app.TabActivity;
-import android.widget.TabHost;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.util.Log;
+import android.widget.TabHost;
+
+import com.tekxpace.musicplayer.activity.HostActivity;
+import com.tekxpace.musicplayer.activity.UseActivity;
 
 public class TabWidget extends TabActivity {
     private static final String TAG = "chat.TabWidget";

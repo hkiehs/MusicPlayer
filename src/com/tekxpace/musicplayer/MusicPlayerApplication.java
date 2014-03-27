@@ -594,7 +594,8 @@ public class MusicPlayerApplication extends Application implements Observable {
 
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm");
 		Date date = new Date();
-		mHistory.add("[" + dateFormat.format(date) + "] (" + nickname + ") " + message);
+//		mHistory.add("[" + dateFormat.format(date) + "] (" + nickname + ") " + message);
+		mHistory.add(message);
 		notifyObservers(HISTORY_CHANGED_EVENT);
 	}
 

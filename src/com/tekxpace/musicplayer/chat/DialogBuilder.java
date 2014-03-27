@@ -16,8 +16,11 @@
 
 package com.tekxpace.musicplayer.chat;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.app.Dialog;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -27,9 +30,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.util.Log;
-
-import java.util.List;
 
 import com.tekxpace.musicplayer.MusicPlayerApplication;
 import com.tekxpace.musicplayer.R;

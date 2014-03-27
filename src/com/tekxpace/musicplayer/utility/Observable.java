@@ -15,7 +15,6 @@
  */
 package com.tekxpace.musicplayer.utility;
 
-import com.tekxpace.musicplayer.utility.Observer;
 
 public interface Observable {
 	public void addObserver(Observer obs);

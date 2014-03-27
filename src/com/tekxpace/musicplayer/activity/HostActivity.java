@@ -16,23 +16,22 @@
 
 package com.tekxpace.musicplayer.activity;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
 import com.tekxpace.musicplayer.MusicPlayerApplication;
 import com.tekxpace.musicplayer.R;
 import com.tekxpace.musicplayer.chat.AllJoynService;
 import com.tekxpace.musicplayer.chat.DialogBuilder;
-import com.tekxpace.musicplayer.chat.AllJoynService.HostChannelState;
 import com.tekxpace.musicplayer.utility.Observable;
 import com.tekxpace.musicplayer.utility.Observer;
-
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.app.Activity;
-import android.app.Dialog;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.util.Log;
 
 public class HostActivity extends Activity implements Observer {
     private static final String TAG = "chat.HostActivity";

@@ -16,17 +16,28 @@
 package com.tekxpace.musicplayer.chat;
 
 import org.alljoyn.bus.BusAttachment;
-import org.alljoyn.bus.BusListener;
-import org.alljoyn.bus.MessageContext;
-import org.alljoyn.bus.SessionListener;
-import org.alljoyn.bus.SessionPortListener;
-import org.alljoyn.bus.Mutable;
-import org.alljoyn.bus.SessionOpts;
 import org.alljoyn.bus.BusException;
+import org.alljoyn.bus.BusListener;
 import org.alljoyn.bus.BusObject;
+import org.alljoyn.bus.MessageContext;
+import org.alljoyn.bus.Mutable;
+import org.alljoyn.bus.SessionListener;
+import org.alljoyn.bus.SessionOpts;
+import org.alljoyn.bus.SessionPortListener;
 import org.alljoyn.bus.SignalEmitter;
 import org.alljoyn.bus.Status;
 import org.alljoyn.bus.annotation.BusSignalHandler;
+
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
+import android.util.Log;
 
 import com.tekxpace.musicplayer.MusicPlayerApplication;
 import com.tekxpace.musicplayer.R;
@@ -34,17 +45,6 @@ import com.tekxpace.musicplayer.TabWidget;
 import com.tekxpace.musicplayer.utility.ChatInterface;
 import com.tekxpace.musicplayer.utility.Observable;
 import com.tekxpace.musicplayer.utility.Observer;
-
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.content.Intent;
-import android.util.Log;
 
 public class AllJoynService extends Service implements Observer {
 	private static final String TAG = "chat.AllJoynService";

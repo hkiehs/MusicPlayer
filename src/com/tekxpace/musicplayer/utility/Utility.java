@@ -28,13 +28,14 @@ import com.parse.ParseQuery;
 import com.parse.ProgressCallback;
 import com.parse.PushService;
 import com.parse.SaveCallback;
-import com.tekxpace.musicplayer.activity.HomeActivity;
-import com.tekxpace.musicplayer.activity.MasterActivity;
+import com.tekxpace.musicplayer.activity.UseActivity;
 import com.tekxpace.musicplayer.parse.Device;
 import com.tekxpace.musicplayer.parse.Media;
 
 public class Utility {
 	private final static String LOG_TAG = "Utility";
+	public static final String songObjectId = "3UljCjhopM";
+	
 	public final static String USER_DEVICE = "userDevice";
 	public final static String OBJECT_ID = "objectId";
 
@@ -63,7 +64,7 @@ public class Utility {
 	}
 
 	public static void subscribeChannel(Context context, String objectId) {
-		PushService.subscribe(context, objectId, HomeActivity.class);
+		PushService.subscribe(context, objectId, UseActivity.class);
 	}
 
 	public static void sendPushNotification(String json, String deviceId) {

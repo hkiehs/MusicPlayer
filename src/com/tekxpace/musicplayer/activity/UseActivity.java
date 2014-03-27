@@ -84,6 +84,23 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 			}
 		});
 
+		mActionButton = (Button) findViewById(R.id.btAction);
+		mActionButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String mediaState = mActionButton.getText().toString();
+				int mediaPosition = mChatApplication.mMediaPlayer.getCurrentPosition();
+				if (mediaState.equalsIgnoreCase(Utility.STATUS_PLAY)) {
+					mChatApplication.newLocalUserMessage("Play");
+					mActionButton.setText("Pause");
+				} else {
+					mChatApplication.newLocalUserMessage("Pause");
+					mActionButton.setText("Play");
+				}
+
+			}
+		});
+
 		mChannelName = (TextView) findViewById(R.id.useChannelName);
 		mChannelStatus = (TextView) findViewById(R.id.useChannelStatus);
 
@@ -176,12 +193,27 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 		Log.i(TAG, "updateHistory()");
 		mHistoryList.clear();
 		List<String> messages = mChatApplication.getHistory();
+
+		if (messages.size() > 0) {
+			Log.d(TAG, "Message [ " + messages.get(messages.size() - 1) + "]");
+			String msg = messages.get(messages.size() - 1);
+			if (msg.equalsIgnoreCase("play")) {
+				if (mChatApplication.mMediaPlayer != null)
+					mChatApplication.mMediaPlayer.start();
+				// Utility.playMedia(mChatApplication.mMediaPlayer, 5);
+			} else {
+				if (mChatApplication.mMediaPlayer != null)
+					mChatApplication.mMediaPlayer.pause();
+				// Utility.pauseMedia(mChatApplication.mMediaPlayer, 5);
+			}
+		}
+
 		for (String message : messages) {
 			mHistoryList.add(message);
 		}
+
 		mHistoryList.notifyDataSetChanged();
 	}
-
 	private void updateChannelState() {
 		Log.i(TAG, "updateHistory()");
 		AllJoynService.UseChannelState channelState = mChatApplication.useGetChannelState();
@@ -254,6 +286,7 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 	private ArrayAdapter<String> mHistoryList;
 	private Button mJoinButton;
 	private Button mLeaveButton;
+	private Button mActionButton;
 	private TextView mChannelName;
 	private TextView mChannelStatus;
 
@@ -269,7 +302,7 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 			// server send download instruction on the group and download it
 			// locally
 
-			Utility.receiveMediaFromServer(device, MasterActivity.songObjectId, this);
+			Utility.receiveMediaFromServer(device, Utility.songObjectId, this);
 		} else {
 			Log.d(TAG, "Registration un-successful");
 			Toast.makeText(UseActivity.this, "Registration un-successful", Toast.LENGTH_SHORT).show();
@@ -286,10 +319,12 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 		// TODO Auto-generated method stub
 		if (data != null) {
 			Toast.makeText(UseActivity.this, "song download successful", Toast.LENGTH_SHORT).show();
+			mChatApplication.mMediaPlayer = Utility.prepareMediaPlayer(UseActivity.this, mChatApplication.mMediaPlayer, data);
 		} else {
 			Toast.makeText(UseActivity.this, "song download un-successful", Toast.LENGTH_SHORT).show();
 			// show retry button on UI
-			// should not allow this guy to play the song as he can not participate now
+			// should not allow this guy to play the song as he can not
+			// participate now
 		}
 	}
 }
