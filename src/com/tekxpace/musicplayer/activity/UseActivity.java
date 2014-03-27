@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2011, AllSeen Alliance. All rights reserved.
- *
- *    Permission to use, copy, modify, and/or distribute this software for any
- *    purpose with or without fee is hereby granted, provided that the above
- *    copyright notice and this permission notice appear in all copies.
- *
- *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
-
 package com.tekxpace.musicplayer.activity;
 
 import java.util.List;
@@ -38,6 +22,7 @@ import com.tekxpace.musicplayer.MusicPlayerApplication;
 import com.tekxpace.musicplayer.R;
 import com.tekxpace.musicplayer.chat.AllJoynService;
 import com.tekxpace.musicplayer.chat.DialogBuilder;
+import com.tekxpace.musicplayer.model.MediaModel;
 import com.tekxpace.musicplayer.parse.Device;
 import com.tekxpace.musicplayer.utility.DownloadInterface;
 import com.tekxpace.musicplayer.utility.Observable;
@@ -89,13 +74,29 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 			@Override
 			public void onClick(View v) {
 				String mediaState = mActionButton.getText().toString();
-				int mediaPosition = mChatApplication.mMediaPlayer.getCurrentPosition();
+				int position = mChatApplication.mMediaPlayer.getCurrentPosition();
+
+				MediaModel mMediaModel = new MediaModel();
+				mMediaModel.playBackPosition = position;
+
 				if (mediaState.equalsIgnoreCase(Utility.STATUS_PLAY)) {
-					mChatApplication.newLocalUserMessage("Play");
+					mMediaModel.action = Utility.STATUS_PLAY;
+					mChatApplication.newLocalUserMessage(mMediaModel.toJson());
 					mActionButton.setText("Pause");
 				} else {
-					mChatApplication.newLocalUserMessage("Pause");
+					mMediaModel.action = Utility.STATUS_PAUSE;
+					mChatApplication.newLocalUserMessage(mMediaModel.toJson());
 					mActionButton.setText("Play");
+				}
+
+				// do the same work to pretend execute the same cmds
+				MediaModel mediaModel = MediaModel.fromJson(mMediaModel.toJson());
+				if (mediaModel != null) {
+					if (mediaModel.action.equalsIgnoreCase(Utility.STATUS_PLAY)) {
+						Utility.playMedia(mChatApplication.mMediaPlayer, mediaModel.playBackPosition);
+					} else if (mediaModel.action.equalsIgnoreCase(Utility.STATUS_PAUSE)) {
+						Utility.pauseMedia(mChatApplication.mMediaPlayer, mediaModel.playBackPosition);
+					}
 				}
 
 			}
@@ -193,25 +194,9 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 		Log.i(TAG, "updateHistory()");
 		mHistoryList.clear();
 		List<String> messages = mChatApplication.getHistory();
-
-		if (messages.size() > 0) {
-			Log.d(TAG, "Message [ " + messages.get(messages.size() - 1) + "]");
-			String msg = messages.get(messages.size() - 1);
-			if (msg.equalsIgnoreCase("play")) {
-				if (mChatApplication.mMediaPlayer != null)
-					mChatApplication.mMediaPlayer.start();
-				// Utility.playMedia(mChatApplication.mMediaPlayer, 5);
-			} else {
-				if (mChatApplication.mMediaPlayer != null)
-					mChatApplication.mMediaPlayer.pause();
-				// Utility.pauseMedia(mChatApplication.mMediaPlayer, 5);
-			}
-		}
-
 		for (String message : messages) {
 			mHistoryList.add(message);
 		}
-
 		mHistoryList.notifyDataSetChanged();
 	}
 	private void updateChannelState() {

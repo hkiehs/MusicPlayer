@@ -592,10 +592,9 @@ public class MusicPlayerApplication extends Application implements Observable {
 			mHistory.remove(0);
 		}
 
-		DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 		Date date = new Date();
-//		mHistory.add("[" + dateFormat.format(date) + "] (" + nickname + ") " + message);
-		mHistory.add(message);
+		mHistory.add("[" + dateFormat.format(date) + "] (" + nickname + ") " + message);
 		notifyObservers(HISTORY_CHANGED_EVENT);
 	}
 
@@ -681,5 +680,5 @@ public class MusicPlayerApplication extends Application implements Observable {
 	 */
 	public Device mDevice = null;
 	public MediaPlayer mMediaPlayer = null;
-	
+
 }

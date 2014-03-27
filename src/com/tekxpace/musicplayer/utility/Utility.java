@@ -29,13 +29,14 @@ import com.parse.ProgressCallback;
 import com.parse.PushService;
 import com.parse.SaveCallback;
 import com.tekxpace.musicplayer.activity.UseActivity;
+import com.tekxpace.musicplayer.model.MediaModel;
 import com.tekxpace.musicplayer.parse.Device;
 import com.tekxpace.musicplayer.parse.Media;
 
 public class Utility {
 	private final static String LOG_TAG = "Utility";
 	public static final String songObjectId = "3UljCjhopM";
-	
+
 	public final static String USER_DEVICE = "userDevice";
 	public final static String OBJECT_ID = "objectId";
 
@@ -195,7 +196,6 @@ public class Utility {
 	}
 
 	public static void playMedia(MediaPlayer mediaPlayer, int playBackPosition) {
-		Log.d(LOG_TAG, "Playing media");
 		if (mediaPlayer != null) {
 			mediaPlayer.seekTo(playBackPosition);
 			mediaPlayer.start();
@@ -203,12 +203,12 @@ public class Utility {
 	}
 
 	public static void pauseMedia(MediaPlayer mediaPlayer, int playBackPosition) {
-		Log.d(LOG_TAG, "Pausing media");
 		if (mediaPlayer != null) {
 			mediaPlayer.pause();
 			mediaPlayer.seekTo(playBackPosition);
 		}
 	}
+
 
 	public static void killMediaPlayer(MediaPlayer mediaPlayer) {
 		if (mediaPlayer != null) {

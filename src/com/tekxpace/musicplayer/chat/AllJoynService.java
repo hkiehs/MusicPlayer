@@ -1,18 +1,3 @@
-/*
- * Copyright (c) 2010-2011,2013, AllSeen Alliance. All rights reserved.
- *
- *    Permission to use, copy, modify, and/or distribute this software for any
- *    purpose with or without fee is hereby granted, provided that the above
- *    copyright notice and this permission notice appear in all copies.
- *
- *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
 package com.tekxpace.musicplayer.chat;
 
 import org.alljoyn.bus.BusAttachment;
@@ -42,9 +27,11 @@ import android.util.Log;
 import com.tekxpace.musicplayer.MusicPlayerApplication;
 import com.tekxpace.musicplayer.R;
 import com.tekxpace.musicplayer.TabWidget;
+import com.tekxpace.musicplayer.model.MediaModel;
 import com.tekxpace.musicplayer.utility.ChatInterface;
 import com.tekxpace.musicplayer.utility.Observable;
 import com.tekxpace.musicplayer.utility.Observer;
+import com.tekxpace.musicplayer.utility.Utility;
 
 public class AllJoynService extends Service implements Observer {
 	private static final String TAG = "chat.AllJoynService";
@@ -1221,6 +1208,15 @@ public class AllJoynService extends Service implements Observer {
 	 */
 	@BusSignalHandler(iface = "org.alljoyn.bus.samples.chat", signal = "Chat")
 	public void Chat(String string) {
+
+		MediaModel mediaModel = MediaModel.fromJson(string);
+		if (mediaModel != null) {
+			if (mediaModel.action.equalsIgnoreCase(Utility.STATUS_PLAY)) {
+				Utility.playMedia(mChatApplication.mMediaPlayer, mediaModel.playBackPosition);
+			} else if (mediaModel.action.equalsIgnoreCase(Utility.STATUS_PAUSE)) {
+				Utility.pauseMedia(mChatApplication.mMediaPlayer, mediaModel.playBackPosition);
+			}
+		}
 
 		/*
 		 * See the long comment in doJoinSession() for more explanation of why
