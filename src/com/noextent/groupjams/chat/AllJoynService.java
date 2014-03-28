@@ -59,11 +59,11 @@ public class AllJoynService extends Service implements Observer {
 		mChatApplication = (MusicPlayerApplication) getApplication();
 		mChatApplication.addObserver(this);
 
-		CharSequence title = "Music Player";
+		CharSequence title = "Group Jams";
 		CharSequence message = "";
 		Intent intent = new Intent(this, TabWidget.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-		Notification notification = new Notification(R.drawable.icon, null, System.currentTimeMillis());
+		Notification notification = new Notification(R.drawable.ic_launcher, null, System.currentTimeMillis());
 		notification.setLatestEventInfo(this, title, message, pendingIntent);
 		notification.flags |= Notification.DEFAULT_SOUND | Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
 
