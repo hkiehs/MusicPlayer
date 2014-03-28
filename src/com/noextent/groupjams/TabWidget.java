@@ -26,7 +26,6 @@ import android.widget.TabHost;
 import com.noextent.groupjams.activity.HostActivity;
 import com.noextent.groupjams.activity.UseActivity;
 import com.noextent.groupjams.utility.Utility;
-import com.tekxpace.musicplayer.R;
 
 public class TabWidget extends TabActivity {
 	private static final String TAG = "chat.TabWidget";

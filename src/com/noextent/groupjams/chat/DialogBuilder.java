@@ -32,8 +32,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.noextent.groupjams.MusicPlayerApplication;
+import com.noextent.groupjams.R;
 import com.noextent.groupjams.activity.UseActivity;
-import com.tekxpace.musicplayer.R;
 
 public class DialogBuilder {
     private static final String TAG = "chat.Dialogs";

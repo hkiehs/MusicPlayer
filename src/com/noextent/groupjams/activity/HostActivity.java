@@ -11,11 +11,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.noextent.groupjams.MusicPlayerApplication;
+import com.noextent.groupjams.R;
 import com.noextent.groupjams.chat.AllJoynService;
 import com.noextent.groupjams.chat.DialogBuilder;
 import com.noextent.groupjams.utility.Observable;
 import com.noextent.groupjams.utility.Observer;
-import com.tekxpace.musicplayer.R;
 
 public class HostActivity extends Activity implements Observer {
     private static final String TAG = "chat.HostActivity";

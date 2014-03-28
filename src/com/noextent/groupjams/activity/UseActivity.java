@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.noextent.groupjams.MusicPlayerApplication;
+import com.noextent.groupjams.R;
 import com.noextent.groupjams.chat.AllJoynService;
 import com.noextent.groupjams.chat.DialogBuilder;
 import com.noextent.groupjams.model.MediaModel;
@@ -24,7 +25,6 @@ import com.noextent.groupjams.utility.Observable;
 import com.noextent.groupjams.utility.Observer;
 import com.noextent.groupjams.utility.RegisterInterface;
 import com.noextent.groupjams.utility.Utility;
-import com.tekxpace.musicplayer.R;
 
 public class UseActivity extends Activity implements Observer, RegisterInterface, DownloadInterface {
 	private static final String TAG = "chat.UseActivity";

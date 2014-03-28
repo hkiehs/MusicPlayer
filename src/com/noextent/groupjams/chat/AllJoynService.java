@@ -25,13 +25,13 @@ import android.os.Message;
 import android.util.Log;
 
 import com.noextent.groupjams.MusicPlayerApplication;
+import com.noextent.groupjams.R;
 import com.noextent.groupjams.TabWidget;
 import com.noextent.groupjams.model.MediaModel;
 import com.noextent.groupjams.utility.ChatInterface;
 import com.noextent.groupjams.utility.Observable;
 import com.noextent.groupjams.utility.Observer;
 import com.noextent.groupjams.utility.Utility;
-import com.tekxpace.musicplayer.R;
 
 public class AllJoynService extends Service implements Observer {
 	private static final String TAG = "chat.AllJoynService";
