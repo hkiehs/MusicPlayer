@@ -24,7 +24,7 @@ import android.util.Log;
 import android.widget.TabHost;
 
 import com.noextent.groupjams.activity.HostActivity;
-import com.noextent.groupjams.activity.UseActivity;
+import com.noextent.groupjams.activity.PlayerActivity;
 import com.noextent.groupjams.utility.Utility;
 
 public class TabWidget extends TabActivity {
@@ -39,7 +39,7 @@ public class TabWidget extends TabActivity {
 		TabHost.TabSpec spec;
 		Intent intent;
 
-		intent = new Intent().setClass(this, UseActivity.class);
+		intent = new Intent().setClass(this, PlayerActivity.class);
 		spec = tabHost.newTabSpec("use").setIndicator("", res.getDrawable(R.drawable.ic_tab_use)).setContent(intent);
 		tabHost.addTab(spec);
 

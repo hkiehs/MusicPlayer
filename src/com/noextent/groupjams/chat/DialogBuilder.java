@@ -33,7 +33,7 @@ import android.widget.TextView;
 
 import com.noextent.groupjams.MusicPlayerApplication;
 import com.noextent.groupjams.R;
-import com.noextent.groupjams.activity.UseActivity;
+import com.noextent.groupjams.activity.PlayerActivity;
 
 public class DialogBuilder {
     private static final String TAG = "chat.Dialogs";
@@ -69,7 +69,7 @@ public class DialogBuilder {
 				 * wrong since it can change.  We have to tell the Android
 				 * application framework to forget about this dialog completely.
 				 */
-    			activity.removeDialog(UseActivity.DIALOG_JOIN_ID);
+    			activity.removeDialog(PlayerActivity.DIALOG_JOIN_ID);
     		}
     	});
     	        	           
@@ -82,7 +82,7 @@ public class DialogBuilder {
 				 * wrong since it can change.  We have to tell the Android
 				 * application framework to forget about this dialog completely.
 				 */
-    			activity.removeDialog(UseActivity.DIALOG_JOIN_ID);
+    			activity.removeDialog(PlayerActivity.DIALOG_JOIN_ID);
     		}
     	});
     	

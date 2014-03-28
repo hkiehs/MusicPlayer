@@ -26,13 +26,13 @@ import com.noextent.groupjams.utility.Observer;
 import com.noextent.groupjams.utility.RegisterInterface;
 import com.noextent.groupjams.utility.Utility;
 
-public class UseActivity extends Activity implements Observer, RegisterInterface, DownloadInterface {
+public class PlayerActivity extends Activity implements Observer, RegisterInterface, DownloadInterface {
 	private static final String TAG = "chat.UseActivity";
 
 	public void onCreate(Bundle savedInstanceState) {
 		Log.i(TAG, "onCreate()");
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.use);
+		setContentView(R.layout.activity_player);
 
 		mHistoryList = new ArrayAdapter<String>(this, android.R.layout.test_list_item);
 		ListView hlv = (ListView) findViewById(R.id.useHistoryList);
@@ -221,7 +221,8 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 	 * handle the general errors. We also handle our own errors.
 	 */
 	private void alljoynError() {
-		if (mChatApplication.getErrorModule() == MusicPlayerApplication.Module.GENERAL || mChatApplication.getErrorModule() == MusicPlayerApplication.Module.USE) {
+		if (mChatApplication.getErrorModule() == MusicPlayerApplication.Module.GENERAL
+				|| mChatApplication.getErrorModule() == MusicPlayerApplication.Module.USE) {
 			showDialog(DIALOG_ALLJOYN_ERROR_ID);
 		}
 	}
@@ -301,7 +302,7 @@ public class UseActivity extends Activity implements Observer, RegisterInterface
 	public void onDownloadSuccess(byte[] data) {
 		if (data != null) {
 			addMessageToList("song downloaded successfully");
-			mChatApplication.mMediaPlayer = Utility.prepareMediaPlayer(UseActivity.this, mChatApplication.mMediaPlayer, data);
+			mChatApplication.mMediaPlayer = Utility.prepareMediaPlayer(PlayerActivity.this, mChatApplication.mMediaPlayer, data);
 			mJoinButton.setEnabled(true);
 		} else {
 			addMessageToList("song download un-successful");

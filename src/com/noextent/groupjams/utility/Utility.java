@@ -17,7 +17,7 @@ import android.media.MediaPlayer;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.noextent.groupjams.activity.UseActivity;
+import com.noextent.groupjams.activity.PlayerActivity;
 import com.noextent.groupjams.parse.Device;
 import com.noextent.groupjams.parse.Media;
 import com.parse.FindCallback;
@@ -67,7 +67,7 @@ public class Utility {
 	}
 
 	public static void subscribeChannel(Context context, String objectId) {
-		PushService.subscribe(context, objectId, UseActivity.class);
+		PushService.subscribe(context, objectId, PlayerActivity.class);
 	}
 
 	public static void sendPushNotification(String json, String deviceId) {
