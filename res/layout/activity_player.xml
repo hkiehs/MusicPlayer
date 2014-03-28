@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg"
     android:orientation="vertical" >
 
     <TableLayout
@@ -61,6 +62,7 @@
         android:background="@android:color/white"
         android:divider="@android:color/black"
         android:dividerHeight="1dp"
-        android:transcriptMode="alwaysScroll" />
+        android:transcriptMode="alwaysScroll"
+        android:visibility="invisible" />
 
 </LinearLayout>

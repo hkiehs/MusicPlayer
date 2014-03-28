@@ -51,9 +51,7 @@
         </activity>
         <activity
             android:name="com.noextent.groupjams.activity.HostActivity"
-            android:label="AllJoyn Chat Channel Hosting"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" >
+            android:screenOrientation="portrait" >
         </activity>
 
         <service android:name=".chat.AllJoynService" />
@@ -65,16 +63,6 @@
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
-        <!--
-        <receiver
-            android:name="CustomPushReceiver"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.noextent.groupjams.UPDATE_STATUS" />
-                <action android:name="com.noextent.groupjams.PAYLOAD_INFO" />
-            </intent-filter>
-        </receiver>
-        -->
         <receiver
             android:name="com.parse.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >

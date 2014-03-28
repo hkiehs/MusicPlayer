@@ -27,10 +27,9 @@ import com.noextent.groupjams.utility.RegisterInterface;
 import com.noextent.groupjams.utility.Utility;
 
 public class PlayerActivity extends Activity implements Observer, RegisterInterface, DownloadInterface {
-	private static final String TAG = "chat.UseActivity";
+	private static final String LOG_TAG = "PlayerActivity";
 
 	public void onCreate(Bundle savedInstanceState) {
-		Log.i(TAG, "onCreate()");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_player);
 
@@ -82,7 +81,6 @@ public class PlayerActivity extends Activity implements Observer, RegisterInterf
 				handler.postDelayed(new Runnable() {
 					@Override
 					public void run() {
-						// do the same work to pretend execute the same cmds
 						if (mediaModel.action.equalsIgnoreCase(Utility.STATUS_PLAY)) {
 							Utility.playMedia(mChatApplication.mMediaPlayer, mediaModel.playBackPosition);
 						} else if (mediaModel.action.equalsIgnoreCase(Utility.STATUS_PAUSE)) {
@@ -90,7 +88,6 @@ public class PlayerActivity extends Activity implements Observer, RegisterInterf
 						}
 					}
 				}, 300);
-
 			}
 		});
 
@@ -126,7 +123,7 @@ public class PlayerActivity extends Activity implements Observer, RegisterInterf
 	}
 
 	public void onDestroy() {
-		Log.i(TAG, "onDestroy()");
+		Log.i(LOG_TAG, "onDestroy()");
 		mChatApplication = (MusicPlayerApplication) getApplication();
 		mChatApplication.deleteObserver(this);
 		super.onDestroy();
@@ -137,7 +134,7 @@ public class PlayerActivity extends Activity implements Observer, RegisterInterf
 	public static final int DIALOG_ALLJOYN_ERROR_ID = 2;
 
 	protected Dialog onCreateDialog(int id) {
-		Log.i(TAG, "onCreateDialog()");
+		Log.i(LOG_TAG, "onCreateDialog()");
 		Dialog result = null;
 		switch (id) {
 			case DIALOG_JOIN_ID : {
@@ -160,7 +157,7 @@ public class PlayerActivity extends Activity implements Observer, RegisterInterf
 	}
 
 	public synchronized void update(Observable o, Object arg) {
-		Log.i(TAG, "update(" + arg + ")");
+		Log.i(LOG_TAG, "update(" + arg + ")");
 		String qualifier = (String) arg;
 
 		if (qualifier.equals(MusicPlayerApplication.APPLICATION_QUIT_EVENT)) {
@@ -185,7 +182,7 @@ public class PlayerActivity extends Activity implements Observer, RegisterInterf
 	}
 
 	private void updateHistory() {
-		Log.i(TAG, "updateHistory()");
+		Log.i(LOG_TAG, "updateHistory()");
 		// mHistoryList.clear();
 		List<String> messages = mChatApplication.getHistory();
 		for (String message : messages) {
@@ -194,7 +191,7 @@ public class PlayerActivity extends Activity implements Observer, RegisterInterf
 		mHistoryList.notifyDataSetChanged();
 	}
 	private void updateChannelState() {
-		Log.i(TAG, "updateHistory()");
+		Log.i(LOG_TAG, "updateHistory()");
 		AllJoynService.UseChannelState channelState = mChatApplication.useGetChannelState();
 		String name = mChatApplication.useGetChannelName();
 		if (name == null) {
@@ -236,22 +233,22 @@ public class PlayerActivity extends Activity implements Observer, RegisterInterf
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 				case HANDLE_APPLICATION_QUIT_EVENT : {
-					Log.i(TAG, "mHandler.handleMessage(): HANDLE_APPLICATION_QUIT_EVENT");
+					Log.i(LOG_TAG, "mHandler.handleMessage(): HANDLE_APPLICATION_QUIT_EVENT");
 					finish();
 				}
 					break;
 				case HANDLE_HISTORY_CHANGED_EVENT : {
-					Log.i(TAG, "mHandler.handleMessage(): HANDLE_HISTORY_CHANGED_EVENT");
+					Log.i(LOG_TAG, "mHandler.handleMessage(): HANDLE_HISTORY_CHANGED_EVENT");
 					updateHistory();
 					break;
 				}
 				case HANDLE_CHANNEL_STATE_CHANGED_EVENT : {
-					Log.i(TAG, "mHandler.handleMessage(): HANDLE_CHANNEL_STATE_CHANGED_EVENT");
+					Log.i(LOG_TAG, "mHandler.handleMessage(): HANDLE_CHANNEL_STATE_CHANGED_EVENT");
 					updateChannelState();
 					break;
 				}
 				case HANDLE_ALLJOYN_ERROR_EVENT : {
-					Log.i(TAG, "mHandler.handleMessage(): HANDLE_ALLJOYN_ERROR_EVENT");
+					Log.i(LOG_TAG, "mHandler.handleMessage(): HANDLE_ALLJOYN_ERROR_EVENT");
 					alljoynError();
 					break;
 				}
