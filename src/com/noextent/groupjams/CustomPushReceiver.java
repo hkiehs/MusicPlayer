@@ -1,4 +1,5 @@
-//package com.tekxpace.musicplayer;
+package com.noextent.groupjams;
+//package com.noextent.groupjams;
 //
 //import java.util.Iterator;
 //import java.util.List;
@@ -18,9 +19,9 @@
 //import com.parse.ParseFile;
 //import com.parse.ParseObject;
 //import com.parse.ParseQuery;
-//import com.tekxpace.musicplayer.model.ConnectionModel;
-//import com.tekxpace.musicplayer.model.PayloadModel;
-//import com.tekxpace.musicplayer.utility.Utility;
+//import com.noextent.groupjams.model.ConnectionModel;
+//import com.noextent.groupjams.model.PayloadModel;
+//import com.noextent.groupjams.utility.Utility;
 //
 //public class CustomPushReceiver extends BroadcastReceiver {
 //	private static final String LOG_TAG = "PushReceiver";

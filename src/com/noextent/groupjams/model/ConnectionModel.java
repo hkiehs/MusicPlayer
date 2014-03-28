@@ -1,4 +1,4 @@
-package com.tekxpace.musicplayer.model;
+package com.noextent.groupjams.model;
 
 import com.google.gson.Gson;
 

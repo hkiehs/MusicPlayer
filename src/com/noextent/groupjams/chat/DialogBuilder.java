@@ -14,7 +14,7 @@
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.tekxpace.musicplayer.chat;
+package com.noextent.groupjams.chat;
 
 import java.util.List;
 
@@ -31,9 +31,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.tekxpace.musicplayer.MusicPlayerApplication;
+import com.noextent.groupjams.MusicPlayerApplication;
+import com.noextent.groupjams.activity.UseActivity;
 import com.tekxpace.musicplayer.R;
-import com.tekxpace.musicplayer.activity.UseActivity;
 
 public class DialogBuilder {
     private static final String TAG = "chat.Dialogs";

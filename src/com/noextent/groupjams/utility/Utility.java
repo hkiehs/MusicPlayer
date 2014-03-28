@@ -1,4 +1,4 @@
-package com.tekxpace.musicplayer.utility;
+package com.noextent.groupjams.utility;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -17,6 +17,9 @@ import android.media.MediaPlayer;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.noextent.groupjams.activity.UseActivity;
+import com.noextent.groupjams.parse.Device;
+import com.noextent.groupjams.parse.Media;
 import com.parse.FindCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
@@ -28,9 +31,6 @@ import com.parse.ParseQuery;
 import com.parse.ProgressCallback;
 import com.parse.PushService;
 import com.parse.SaveCallback;
-import com.tekxpace.musicplayer.activity.UseActivity;
-import com.tekxpace.musicplayer.parse.Device;
-import com.tekxpace.musicplayer.parse.Media;
 
 public class Utility {
 	private final static String LOG_TAG = "Utility";
@@ -42,8 +42,8 @@ public class Utility {
 	public final static String USER_DEVICE = "userDevice";
 	public final static String OBJECT_ID = "objectId";
 
-	public static final String ACTION_UPDATE_STATUS = "com.tekxpace.musicplayer.UPDATE_STATUS";
-	public static final String ACTION_PAYLOAD_INFO = "com.tekxpace.musicplayer.PAYLOAD_INFO";
+	public static final String ACTION_UPDATE_STATUS = "com.noextent.groupjams.UPDATE_STATUS";
+	public static final String ACTION_PAYLOAD_INFO = "com.noextent.groupjams.PAYLOAD_INFO";
 
 	public static final String STATUS_CONNECTED = "connected";
 	public static final String STATUS_READY = "ready";

@@ -14,7 +14,7 @@
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.tekxpace.musicplayer;
+package com.noextent.groupjams;
 
 import android.app.TabActivity;
 import android.content.Intent;
@@ -23,9 +23,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TabHost;
 
-import com.tekxpace.musicplayer.activity.HostActivity;
-import com.tekxpace.musicplayer.activity.UseActivity;
-import com.tekxpace.musicplayer.utility.Utility;
+import com.noextent.groupjams.activity.HostActivity;
+import com.noextent.groupjams.activity.UseActivity;
+import com.noextent.groupjams.utility.Utility;
+import com.tekxpace.musicplayer.R;
 
 public class TabWidget extends TabActivity {
 	private static final String TAG = "chat.TabWidget";

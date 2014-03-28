@@ -1,4 +1,4 @@
-package com.tekxpace.musicplayer.parse;
+package com.noextent.groupjams.parse;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;

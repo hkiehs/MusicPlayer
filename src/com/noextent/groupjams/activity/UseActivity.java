@@ -1,4 +1,4 @@
-package com.tekxpace.musicplayer.activity;
+package com.noextent.groupjams.activity;
 
 import java.util.List;
 
@@ -8,26 +8,23 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.tekxpace.musicplayer.MusicPlayerApplication;
+import com.noextent.groupjams.MusicPlayerApplication;
+import com.noextent.groupjams.chat.AllJoynService;
+import com.noextent.groupjams.chat.DialogBuilder;
+import com.noextent.groupjams.model.MediaModel;
+import com.noextent.groupjams.parse.Device;
+import com.noextent.groupjams.utility.DownloadInterface;
+import com.noextent.groupjams.utility.Observable;
+import com.noextent.groupjams.utility.Observer;
+import com.noextent.groupjams.utility.RegisterInterface;
+import com.noextent.groupjams.utility.Utility;
 import com.tekxpace.musicplayer.R;
-import com.tekxpace.musicplayer.chat.AllJoynService;
-import com.tekxpace.musicplayer.chat.DialogBuilder;
-import com.tekxpace.musicplayer.model.MediaModel;
-import com.tekxpace.musicplayer.parse.Device;
-import com.tekxpace.musicplayer.utility.DownloadInterface;
-import com.tekxpace.musicplayer.utility.Observable;
-import com.tekxpace.musicplayer.utility.Observer;
-import com.tekxpace.musicplayer.utility.RegisterInterface;
-import com.tekxpace.musicplayer.utility.Utility;
 
 public class UseActivity extends Activity implements Observer, RegisterInterface, DownloadInterface {
 	private static final String TAG = "chat.UseActivity";

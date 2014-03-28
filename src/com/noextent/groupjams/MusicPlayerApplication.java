@@ -14,7 +14,7 @@
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.tekxpace.musicplayer;
+package com.noextent.groupjams;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,17 +29,16 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.util.Log;
 
+import com.noextent.groupjams.chat.AllJoynService;
+import com.noextent.groupjams.parse.Device;
+import com.noextent.groupjams.parse.Group;
+import com.noextent.groupjams.parse.Media;
+import com.noextent.groupjams.utility.Observable;
+import com.noextent.groupjams.utility.Observer;
 import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseObject;
 import com.parse.PushService;
-import com.tekxpace.musicplayer.chat.AllJoynService;
-import com.tekxpace.musicplayer.parse.Device;
-import com.tekxpace.musicplayer.parse.Group;
-import com.tekxpace.musicplayer.parse.Media;
-import com.tekxpace.musicplayer.utility.Observable;
-import com.tekxpace.musicplayer.utility.Observer;
-import com.tekxpace.musicplayer.utility.Utility;
 
 /**
  * The ChatAppliation class serves as the Model (in the sense of the common user

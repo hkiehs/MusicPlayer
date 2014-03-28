@@ -1,4 +1,4 @@
-package com.tekxpace.musicplayer.chat;
+package com.noextent.groupjams.chat;
 
 import org.alljoyn.bus.BusAttachment;
 import org.alljoyn.bus.BusException;
@@ -24,14 +24,14 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
-import com.tekxpace.musicplayer.MusicPlayerApplication;
+import com.noextent.groupjams.MusicPlayerApplication;
+import com.noextent.groupjams.TabWidget;
+import com.noextent.groupjams.model.MediaModel;
+import com.noextent.groupjams.utility.ChatInterface;
+import com.noextent.groupjams.utility.Observable;
+import com.noextent.groupjams.utility.Observer;
+import com.noextent.groupjams.utility.Utility;
 import com.tekxpace.musicplayer.R;
-import com.tekxpace.musicplayer.TabWidget;
-import com.tekxpace.musicplayer.model.MediaModel;
-import com.tekxpace.musicplayer.utility.ChatInterface;
-import com.tekxpace.musicplayer.utility.Observable;
-import com.tekxpace.musicplayer.utility.Observer;
-import com.tekxpace.musicplayer.utility.Utility;
 
 public class AllJoynService extends Service implements Observer {
 	private static final String TAG = "chat.AllJoynService";

@@ -1,9 +1,9 @@
-package com.tekxpace.musicplayer.parse;
+package com.noextent.groupjams.parse;
 
+import com.noextent.groupjams.utility.Utility;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
-import com.tekxpace.musicplayer.utility.Utility;
 
 @ParseClassName("Media")
 public class Media extends ParseObject {

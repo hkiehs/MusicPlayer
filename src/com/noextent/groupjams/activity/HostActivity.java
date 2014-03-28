@@ -1,4 +1,4 @@
-package com.tekxpace.musicplayer.activity;
+package com.noextent.groupjams.activity;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -10,12 +10,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.tekxpace.musicplayer.MusicPlayerApplication;
+import com.noextent.groupjams.MusicPlayerApplication;
+import com.noextent.groupjams.chat.AllJoynService;
+import com.noextent.groupjams.chat.DialogBuilder;
+import com.noextent.groupjams.utility.Observable;
+import com.noextent.groupjams.utility.Observer;
 import com.tekxpace.musicplayer.R;
-import com.tekxpace.musicplayer.chat.AllJoynService;
-import com.tekxpace.musicplayer.chat.DialogBuilder;
-import com.tekxpace.musicplayer.utility.Observable;
-import com.tekxpace.musicplayer.utility.Observer;
 
 public class HostActivity extends Activity implements Observer {
     private static final String TAG = "chat.HostActivity";
