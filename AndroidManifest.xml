@@ -42,7 +42,9 @@
         <activity
             android:name="com.noextent.groupjams.activity.PlayerActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Styled"
+            android:uiOptions="splitActionBarWhenNarrow" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,6 +54,17 @@
         <activity
             android:name="com.noextent.groupjams.activity.HostActivity"
             android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activity.Styled"
+            android:label="@string/styled"
+            android:theme="@style/Theme.Styled"
+            android:uiOptions="splitActionBarWhenNarrow" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="com.actionbarsherlock.sample.demos.EXAMPLE" />
+            </intent-filter>
         </activity>
 
         <service android:name=".chat.AllJoynService" />

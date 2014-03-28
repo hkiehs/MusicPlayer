@@ -2,8 +2,10 @@ package com.noextent.groupjams.activity;
 
 import java.util.List;
 
-import android.app.Activity;
 import android.app.Dialog;
+import android.graphics.Shader.TileMode;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,6 +16,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.noextent.groupjams.MusicPlayerApplication;
 import com.noextent.groupjams.R;
 import com.noextent.groupjams.chat.AllJoynService;
@@ -26,12 +31,24 @@ import com.noextent.groupjams.utility.Observer;
 import com.noextent.groupjams.utility.RegisterInterface;
 import com.noextent.groupjams.utility.Utility;
 
-public class PlayerActivity extends Activity implements Observer, RegisterInterface, DownloadInterface {
+public class PlayerActivity extends SherlockActivity implements Observer, RegisterInterface, DownloadInterface {
 	private static final String LOG_TAG = "PlayerActivity";
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_player);
+
+		// This is a workaround for http://b.android.com/15340 from
+		// http://stackoverflow.com/a/5852198/132047
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			BitmapDrawable bg = (BitmapDrawable) getResources().getDrawable(R.drawable.bg_striped);
+			bg.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
+			getSupportActionBar().setBackgroundDrawable(bg);
+
+			BitmapDrawable bgSplit = (BitmapDrawable) getResources().getDrawable(R.drawable.bg_striped_split_img);
+			bgSplit.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
+			getSupportActionBar().setSplitBackgroundDrawable(bgSplit);
+		}
 
 		mHistoryList = new ArrayAdapter<String>(this, android.R.layout.test_list_item);
 		ListView hlv = (ListView) findViewById(R.id.useHistoryList);
@@ -120,6 +137,17 @@ public class PlayerActivity extends Activity implements Observer, RegisterInterf
 		mChatApplication.addObserver(this);
 
 		Utility.registerDevice(this, "Device_A", this);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add("Save").setIcon(R.drawable.ic_compose).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+		menu.add("Search").setIcon(R.drawable.ic_search).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+		menu.add("Refresh").setIcon(R.drawable.ic_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	public void onDestroy() {
