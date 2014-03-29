@@ -40,7 +40,8 @@ import com.noextent.groupjams.utility.Utility;
 public class PlayerActivity extends SherlockFragmentActivity implements Observer, RegisterInterface, DownloadInterface {
 	private static final String LOG_TAG = "PlayerActivity";
 
-	ActionMode mMode;
+	private MainFragment mainFragment;
+	private ActionMode mMode;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -391,8 +392,9 @@ public class PlayerActivity extends SherlockFragmentActivity implements Observer
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-//		Toast.makeText(this, "ItemId [" + item.getItemId() + "]", Toast.LENGTH_SHORT).show();
-		Toast.makeText(this, "ItemId [" + item.toString() + "]", Toast.LENGTH_SHORT).show();
+		if (mainFragment.mDrawerToggle.onOptionsItemSelected(item)) {
+			return true;
+		}
 
 		switch (item.getItemId()) {
 			case R.id.create_group :
@@ -401,9 +403,6 @@ public class PlayerActivity extends SherlockFragmentActivity implements Observer
 
 			case R.id.add_group :
 				break;
-
-		// case R.id.create_group :
-		// break;
 		}
 		return true;
 	}
@@ -417,6 +416,7 @@ public class PlayerActivity extends SherlockFragmentActivity implements Observer
 	private void setInitialFragment(int contentViewId) {
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		fragmentTransaction.add(contentViewId, MainFragment.newInstance()).commit();
+		mainFragment = (MainFragment) MainFragment.newInstance();
+		fragmentTransaction.add(contentViewId, mainFragment).commit();
 	}
 }

@@ -15,16 +15,13 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.noextent.groupjams.R;
 import com.noextent.groupjams.utility.Shakespeare;
 import com.sherlock.navigationdrawer.compat.SherlockActionBarDrawerToggle;
 
 public class MainFragment extends SherlockFragment {
 
-	private SherlockActionBarDrawerToggle mDrawerToggle;
+	public SherlockActionBarDrawerToggle mDrawerToggle;
 	private ActionBarHelper mActionBar;
 	private DrawerLayout mDrawerLayout;
 	private ListView listView;
@@ -69,25 +66,6 @@ public class MainFragment extends SherlockFragment {
 				R.string.drawer_close);
 		mDrawerToggle.syncState();
 		return view;
-	}
-
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater = ((SherlockFragmentActivity) getActivity()).getSupportMenuInflater();
-		inflater.inflate(R.menu.main_menu, menu);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		/*
-		 * The action bar home/up action should open or close the drawer.
-		 * mDrawerToggle will take care of this.
-		 */
-		if (mDrawerToggle.onOptionsItemSelected(item)) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	@Override

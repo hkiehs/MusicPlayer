@@ -4,11 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
@@ -69,5 +64,10 @@
         android:dividerHeight="1dp"
         android:transcriptMode="alwaysScroll"
         android:visibility="invisible" />
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
