@@ -3,6 +3,7 @@ package com.noextent.groupjams.activity;
 import java.util.List;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
@@ -20,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
@@ -37,10 +39,16 @@ import com.noextent.groupjams.utility.RegisterInterface;
 import com.noextent.groupjams.utility.SampleList;
 import com.noextent.groupjams.utility.Utility;
 
-public class PlayerActivity extends SherlockFragmentActivity implements Observer, RegisterInterface, DownloadInterface {
+public class PlayerActivity extends SherlockFragmentActivity
+		implements
+			Observer,
+			RegisterInterface,
+			DownloadInterface,
+			ActionBar.OnNavigationListener {
 	private static final String LOG_TAG = "PlayerActivity";
 
 	private MainFragment mainFragment;
+	private String[] mLocations;
 	private ActionMode mMode;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +59,15 @@ public class PlayerActivity extends SherlockFragmentActivity implements Observer
 		if (savedInstanceState == null) {
 			setInitialFragment(frame.getId());
 		}
+
+		mLocations = getResources().getStringArray(R.array.locations);
+
+		Context context = getSupportActionBar().getThemedContext();
+		ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, R.array.locations, R.layout.sherlock_spinner_item);
+		list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+
+		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		getSupportActionBar().setListNavigationCallbacks(list, this);
 
 		// This is a workaround for http://b.android.com/15340 from
 		// http://stackoverflow.com/a/5852198/132047
@@ -401,8 +418,8 @@ public class PlayerActivity extends SherlockFragmentActivity implements Observer
 				mMode = startActionMode(new AnActionModeOfEpicProportions());
 				break;
 
-			case R.id.add_group :
-				break;
+//			case R.id.add_group :
+//				break;
 		}
 		return true;
 	}
@@ -418,5 +435,11 @@ public class PlayerActivity extends SherlockFragmentActivity implements Observer
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		mainFragment = (MainFragment) MainFragment.newInstance();
 		fragmentTransaction.add(contentViewId, mainFragment).commit();
+	}
+
+	@Override
+	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		getSupportActionBar().setSubtitle(mLocations[itemPosition]);
+		return true;
 	}
 }
