@@ -1,39 +1,19 @@
 package com.noextent.groupjams.activity;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.graphics.Shader.TileMode;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.ImageSpan;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.ActionMode;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.widget.SearchView;
 import com.noextent.groupjams.MusicPlayerApplication;
 import com.noextent.groupjams.R;
 import com.noextent.groupjams.chat.AllJoynService;
@@ -44,51 +24,14 @@ import com.noextent.groupjams.utility.DownloadInterface;
 import com.noextent.groupjams.utility.Observable;
 import com.noextent.groupjams.utility.Observer;
 import com.noextent.groupjams.utility.RegisterInterface;
-import com.noextent.groupjams.utility.SampleList;
 import com.noextent.groupjams.utility.Utility;
 
-public class PlayerActivity extends SherlockFragmentActivity
-		implements
-			Observer,
-			RegisterInterface,
-			DownloadInterface,
-			ActionBar.OnNavigationListener,
-			SearchView.OnQueryTextListener {
+public class PlayerActivity extends FragmentActivity implements Observer, RegisterInterface, DownloadInterface {
 	private static final String LOG_TAG = "PlayerActivity";
-
-	private MainFragment mainFragment;
-	private String[] mLocations;
-	private ActionMode mMode;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_player);
-
-		FrameLayout frame = (FrameLayout) findViewById(R.id.frameLayout);
-		if (savedInstanceState == null) {
-			setInitialFragment(frame.getId());
-		}
-
-		mLocations = getResources().getStringArray(R.array.locations);
-
-		Context context = getSupportActionBar().getThemedContext();
-		ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, R.array.locations, R.layout.sherlock_spinner_item);
-		list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
-
-		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-		getSupportActionBar().setListNavigationCallbacks(list, this);
-
-		// This is a workaround for http://b.android.com/15340 from
-		// http://stackoverflow.com/a/5852198/132047
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			BitmapDrawable bg = (BitmapDrawable) getResources().getDrawable(R.drawable.bg_striped);
-			bg.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
-			getSupportActionBar().setBackgroundDrawable(bg);
-
-			BitmapDrawable bgSplit = (BitmapDrawable) getResources().getDrawable(R.drawable.bg_striped_split_img);
-			bgSplit.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
-			getSupportActionBar().setSplitBackgroundDrawable(bgSplit);
-		}
 
 		mHistoryList = new ArrayAdapter<String>(this, android.R.layout.test_list_item);
 		ListView hlv = (ListView) findViewById(R.id.useHistoryList);
@@ -364,93 +307,5 @@ public class PlayerActivity extends SherlockFragmentActivity
 			// should not allow this guy to play the song as he can not
 			// participate now
 		}
-	}
-
-	/**
-	 * Setting up Action Bar Items
-	 * 
-	 */
-
-	private final class AnActionModeOfEpicProportions implements ActionMode.Callback {
-		@Override
-		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			// Used to put dark icons on light action bar
-			boolean isLight = SampleList.THEME == R.style.Theme_Sherlock_Light;
-
-			menu.add("Create Group").setIcon(isLight ? R.drawable.ic_search_inverse : R.drawable.ic_search)
-					.setActionView(R.layout.collapsible_edittext)
-					.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-
-			return true;
-		}
-
-		@Override
-		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-			return false;
-		}
-
-		@Override
-		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-			Toast.makeText(PlayerActivity.this, "Got click: " + item, Toast.LENGTH_SHORT).show();
-			mode.finish();
-			return true;
-		}
-
-		@Override
-		public void onDestroyActionMode(ActionMode mode) {
-		}
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (mainFragment.mDrawerToggle.onOptionsItemSelected(item)) {
-			return true;
-		}
-
-		switch (item.getItemId()) {
-			case R.id.create_group :
-				// mMode = startActionMode(new AnActionModeOfEpicProportions());
-				break;
-		}
-		return true;
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Create the search view
-		SearchView searchView = new SearchView(getSupportActionBar().getThemedContext());
-		searchView.setQueryHint("Group name");
-		searchView.setOnQueryTextListener(this);
-		searchView.setImeOptions(EditorInfo.IME_ACTION_GO);
-
-		menu.add("Create Group").setIcon(R.drawable.ic_action_add_group).setActionView(searchView)
-				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-		return true;
-	}
-
-	private void setInitialFragment(int contentViewId) {
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		mainFragment = (MainFragment) MainFragment.newInstance();
-		fragmentTransaction.add(contentViewId, mainFragment).commit();
-	}
-
-	@Override
-	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		// getSupportActionBar().setSubtitle(mLocations[itemPosition]);
-		return true;
-	}
-
-	@Override
-	public boolean onQueryTextSubmit(String query) {
-		// TODO Auto-generated method stub
-		Toast.makeText(PlayerActivity.this, "You searched for : " + query, Toast.LENGTH_SHORT).show();
-		return false;
-	}
-
-	@Override
-	public boolean onQueryTextChange(String newText) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 }
