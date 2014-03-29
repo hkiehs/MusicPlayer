@@ -17,7 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -34,8 +34,9 @@ import com.noextent.groupjams.utility.RegisterInterface;
 import com.noextent.groupjams.utility.SampleList;
 import com.noextent.groupjams.utility.Utility;
 
-public class PlayerActivity extends SherlockActivity implements Observer, RegisterInterface, DownloadInterface {
+public class PlayerActivity extends SherlockFragmentActivity implements Observer, RegisterInterface, DownloadInterface {
 	private static final String LOG_TAG = "PlayerActivity";
+	private static final int CONTENT_VIEW_ID = 666;
 
 	ActionMode mMode;
 
@@ -54,6 +55,7 @@ public class PlayerActivity extends SherlockActivity implements Observer, Regist
 			bgSplit.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
 			getSupportActionBar().setSplitBackgroundDrawable(bgSplit);
 		}
+		getSupportActionBar().setSubtitle("No group selected");
 
 		mHistoryList = new ArrayAdapter<String>(this, android.R.layout.test_list_item);
 		ListView hlv = (ListView) findViewById(R.id.useHistoryList);
@@ -390,14 +392,7 @@ public class PlayerActivity extends SherlockActivity implements Observer, Regist
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add("Create Group").setIcon(R.drawable.ic_action_add_group).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		menu.add("Join Group").setIcon(R.drawable.ic_action_add_person).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-		// menu.add("Search").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM |
-		// MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-
-		// refresh and join for slave devices
-
+		getSupportMenuInflater().inflate(R.menu.main_menu, menu);
 		return true;
 	}
 }
