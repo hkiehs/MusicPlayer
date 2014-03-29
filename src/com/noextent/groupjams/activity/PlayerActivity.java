@@ -1,22 +1,29 @@
 package com.noextent.groupjams.activity;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +33,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
 import com.noextent.groupjams.MusicPlayerApplication;
 import com.noextent.groupjams.R;
 import com.noextent.groupjams.chat.AllJoynService;
@@ -44,7 +52,8 @@ public class PlayerActivity extends SherlockFragmentActivity
 			Observer,
 			RegisterInterface,
 			DownloadInterface,
-			ActionBar.OnNavigationListener {
+			ActionBar.OnNavigationListener,
+			SearchView.OnQueryTextListener {
 	private static final String LOG_TAG = "PlayerActivity";
 
 	private MainFragment mainFragment;
@@ -80,7 +89,6 @@ public class PlayerActivity extends SherlockFragmentActivity
 			bgSplit.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
 			getSupportActionBar().setSplitBackgroundDrawable(bgSplit);
 		}
-		getSupportActionBar().setSubtitle("No group selected");
 
 		mHistoryList = new ArrayAdapter<String>(this, android.R.layout.test_list_item);
 		ListView hlv = (ListView) findViewById(R.id.useHistoryList);
@@ -369,23 +377,9 @@ public class PlayerActivity extends SherlockFragmentActivity
 			// Used to put dark icons on light action bar
 			boolean isLight = SampleList.THEME == R.style.Theme_Sherlock_Light;
 
-			menu.add("Save").setIcon(isLight ? R.drawable.ic_compose_inverse : R.drawable.ic_compose)
-					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-			menu.add("Search").setIcon(isLight ? R.drawable.ic_search_inverse : R.drawable.ic_search)
-					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-			menu.add("Refresh").setIcon(isLight ? R.drawable.ic_refresh_inverse : R.drawable.ic_refresh)
-					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-			menu.add("Save").setIcon(isLight ? R.drawable.ic_compose_inverse : R.drawable.ic_compose)
-					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-			menu.add("Search").setIcon(isLight ? R.drawable.ic_search_inverse : R.drawable.ic_search)
-					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-			menu.add("Refresh").setIcon(isLight ? R.drawable.ic_refresh_inverse : R.drawable.ic_refresh)
-					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+			menu.add("Create Group").setIcon(isLight ? R.drawable.ic_search_inverse : R.drawable.ic_search)
+					.setActionView(R.layout.collapsible_edittext)
+					.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 
 			return true;
 		}
@@ -415,18 +409,22 @@ public class PlayerActivity extends SherlockFragmentActivity
 
 		switch (item.getItemId()) {
 			case R.id.create_group :
-				mMode = startActionMode(new AnActionModeOfEpicProportions());
+				// mMode = startActionMode(new AnActionModeOfEpicProportions());
 				break;
-
-//			case R.id.add_group :
-//				break;
 		}
 		return true;
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.main_menu, menu);
+		// Create the search view
+		SearchView searchView = new SearchView(getSupportActionBar().getThemedContext());
+		searchView.setQueryHint("Group name");
+		searchView.setOnQueryTextListener(this);
+		searchView.setImeOptions(EditorInfo.IME_ACTION_GO);
+
+		menu.add("Create Group").setIcon(R.drawable.ic_action_add_group).setActionView(searchView)
+				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 		return true;
 	}
 
@@ -439,7 +437,20 @@ public class PlayerActivity extends SherlockFragmentActivity
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		getSupportActionBar().setSubtitle(mLocations[itemPosition]);
+		// getSupportActionBar().setSubtitle(mLocations[itemPosition]);
 		return true;
+	}
+
+	@Override
+	public boolean onQueryTextSubmit(String query) {
+		// TODO Auto-generated method stub
+		Toast.makeText(PlayerActivity.this, "You searched for : " + query, Toast.LENGTH_SHORT).show();
+		return false;
+	}
+
+	@Override
+	public boolean onQueryTextChange(String newText) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
