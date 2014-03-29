@@ -15,8 +15,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.noextent.groupjams.MusicPlayerApplication;
@@ -29,10 +31,13 @@ import com.noextent.groupjams.utility.DownloadInterface;
 import com.noextent.groupjams.utility.Observable;
 import com.noextent.groupjams.utility.Observer;
 import com.noextent.groupjams.utility.RegisterInterface;
+import com.noextent.groupjams.utility.SampleList;
 import com.noextent.groupjams.utility.Utility;
 
 public class PlayerActivity extends SherlockActivity implements Observer, RegisterInterface, DownloadInterface {
 	private static final String LOG_TAG = "PlayerActivity";
+
+	ActionMode mMode;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -137,17 +142,6 @@ public class PlayerActivity extends SherlockActivity implements Observer, Regist
 		mChatApplication.addObserver(this);
 
 		Utility.registerDevice(this, "Device_A", this);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add("Save").setIcon(R.drawable.ic_compose).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-
-		menu.add("Search").setIcon(R.drawable.ic_search).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-
-		menu.add("Refresh").setIcon(R.drawable.ic_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-
-		return super.onCreateOptionsMenu(menu);
 	}
 
 	public void onDestroy() {
@@ -335,5 +329,75 @@ public class PlayerActivity extends SherlockActivity implements Observer, Regist
 			// should not allow this guy to play the song as he can not
 			// participate now
 		}
+	}
+
+	/**
+	 * Setting up Action Bar Items
+	 * 
+	 */
+
+	private final class AnActionModeOfEpicProportions implements ActionMode.Callback {
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			// Used to put dark icons on light action bar
+			boolean isLight = SampleList.THEME == R.style.Theme_Sherlock_Light;
+
+			menu.add("Save").setIcon(isLight ? R.drawable.ic_compose_inverse : R.drawable.ic_compose)
+					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+			menu.add("Search").setIcon(isLight ? R.drawable.ic_search_inverse : R.drawable.ic_search)
+					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+			menu.add("Refresh").setIcon(isLight ? R.drawable.ic_refresh_inverse : R.drawable.ic_refresh)
+					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+			menu.add("Save").setIcon(isLight ? R.drawable.ic_compose_inverse : R.drawable.ic_compose)
+					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+			menu.add("Search").setIcon(isLight ? R.drawable.ic_search_inverse : R.drawable.ic_search)
+					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+			menu.add("Refresh").setIcon(isLight ? R.drawable.ic_refresh_inverse : R.drawable.ic_refresh)
+					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+			return true;
+		}
+
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false;
+		}
+
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			Toast.makeText(PlayerActivity.this, "Got click: " + item, Toast.LENGTH_SHORT).show();
+			mode.finish();
+			return true;
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+		}
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// This uses the imported MenuItem from ActionBarSherlock
+		Toast.makeText(this, "Got click: " + item.toString(), Toast.LENGTH_SHORT).show();
+		mMode = startActionMode(new AnActionModeOfEpicProportions());
+		return true;
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add("Create Group").setIcon(R.drawable.ic_action_add_group).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		menu.add("Join Group").setIcon(R.drawable.ic_action_add_person).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+		// menu.add("Search").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM |
+		// MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+		// refresh and join for slave devices
+
+		return true;
 	}
 }
