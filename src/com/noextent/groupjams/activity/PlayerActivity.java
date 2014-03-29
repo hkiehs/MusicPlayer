@@ -9,10 +9,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,13 +39,17 @@ import com.noextent.groupjams.utility.Utility;
 
 public class PlayerActivity extends SherlockFragmentActivity implements Observer, RegisterInterface, DownloadInterface {
 	private static final String LOG_TAG = "PlayerActivity";
-	private static final int CONTENT_VIEW_ID = 666;
 
 	ActionMode mMode;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_player);
+
+		FrameLayout frame = (FrameLayout) findViewById(R.id.frameLayout);
+		if (savedInstanceState == null) {
+			setInitialFragment(frame.getId());
+		}
 
 		// This is a workaround for http://b.android.com/15340 from
 		// http://stackoverflow.com/a/5852198/132047
@@ -384,9 +391,20 @@ public class PlayerActivity extends SherlockFragmentActivity implements Observer
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// This uses the imported MenuItem from ActionBarSherlock
-		Toast.makeText(this, "Got click: " + item.toString(), Toast.LENGTH_SHORT).show();
-		mMode = startActionMode(new AnActionModeOfEpicProportions());
+//		Toast.makeText(this, "ItemId [" + item.getItemId() + "]", Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "ItemId [" + item.toString() + "]", Toast.LENGTH_SHORT).show();
+
+		switch (item.getItemId()) {
+			case R.id.create_group :
+				mMode = startActionMode(new AnActionModeOfEpicProportions());
+				break;
+
+			case R.id.add_group :
+				break;
+
+		// case R.id.create_group :
+		// break;
+		}
 		return true;
 	}
 
@@ -394,5 +412,11 @@ public class PlayerActivity extends SherlockFragmentActivity implements Observer
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.main_menu, menu);
 		return true;
+	}
+
+	private void setInitialFragment(int contentViewId) {
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		fragmentTransaction.add(contentViewId, MainFragment.newInstance()).commit();
 	}
 }
