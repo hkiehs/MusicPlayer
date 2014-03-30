@@ -6,7 +6,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -26,7 +26,7 @@ import com.noextent.groupjams.utility.Observer;
 import com.noextent.groupjams.utility.RegisterInterface;
 import com.noextent.groupjams.utility.Utility;
 
-public class PlayerActivity extends FragmentActivity implements Observer, RegisterInterface, DownloadInterface {
+public class PlayerActivity extends ActionBarActivity implements Observer, RegisterInterface, DownloadInterface {
 	private static final String LOG_TAG = "PlayerActivity";
 
 	public void onCreate(Bundle savedInstanceState) {
